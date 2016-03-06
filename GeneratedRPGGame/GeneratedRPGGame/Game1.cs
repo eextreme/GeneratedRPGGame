@@ -18,12 +18,12 @@ namespace GeneratedRPGGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D circle, line, fans;
+        Texture2D circle, line;
         KeyboardState state;
         SpriteFont coordinates;
         String indicator;
-        double[] hitArray, hitCrit, hitOk;
-        List<Fan> allFans = new List<Fan>();
+        float[] hitArray, hitCrit, hitOk, hitAng;
+        List<Fan> allFans, critFans;
         Vector2 screenCenter, imageCenter, imageCenter2, imageCenter3;
 
         public Game1()
@@ -51,12 +51,14 @@ namespace GeneratedRPGGame
             state = Keyboard.GetState();
             circle = drawCircle(300);
             line = createLine(150, Color.Red);
+            current = 0;
 
             coordinates = Content.Load<SpriteFont>("Courier New");
             indicator = "Press and hold space to stop";
 
-            hitCrit = new double[3] { 10, 120, 260 };
-            hitOk = new double[3] { 80, 80, 80 };
+            hitCrit = new float[3] { 120, 240, 360 };
+            hitOk = new float[3] { 60, 60, 60 };
+            hitAng = new float[3] { 0, 0, 0 };
 
             createAttackCircle(3, hitCrit, hitOk);
 
@@ -98,6 +100,7 @@ namespace GeneratedRPGGame
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         private float RotationAngle;
+        private bool pressed=false;
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
@@ -105,35 +108,69 @@ namespace GeneratedRPGGame
                 this.Exit();
 
             float elapsed = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            // TODO: Add your game logic here.
-            if (!getKey().IsKeyDown(Keys.Space))
-                RotationAngle += elapsed / 100;
-            else
-                checkIfHit(RotationAngle);
             
+            RotationAngle += elapsed / 1000;
+
+            //indicator = "Mouse is in " + getMouseState();
+            if (getMouseState().LeftButton==ButtonState.Pressed)
+            {
+                if (current < 3 && pressed)
+                {
+                    hitAng[current] = RotationAngle;
+                    current++;
+                    pressed = false;
+                }
+            }
+
+            if (getMouseState().LeftButton==ButtonState.Released)
+            {
+                pressed = true;
+            }
+
+            if (getMouseState().RightButton == ButtonState.Pressed)
+            {
+                calculateHitInfo(hitAng, hitCrit);
+                current = 0;
+            }
+
+                                    
             float circle = MathHelper.Pi * 2;
             RotationAngle = RotationAngle % circle;
+
+           
 
             // TODO: Add your update logic here
 
             base.Update(gameTime);
         }
 
-        private void checkIfHit(float angle)
+        private int current;
+        private void calculateHitInfo(float[] hit, float[] loc)
         {
-            foreach (double i in hitArray)
-            {
-                double error = Math.Abs(angle - i) / i;
+            indicator = String.Format("\nFirst hit at {0} with error of {1}\nSecond hit at {2} with error of {3}\nThird hit at {4} with error of {5}",
+                                        hit[0] * 180 / Math.PI, getError(hit[0], degToRad(loc[0])),
+                                        hit[1] * 180 / Math.PI, getError(hit[1], degToRad(loc[1])),
+                                        hit[2] * 180 / Math.PI, getError(hit[2], degToRad(loc[2]))); 
+        }
 
-                if (error <= 0.05)
-                    indicator = "Crit at " + angle * 180 / Math.PI;
-                else if (error <= 0.10)
-                    indicator = "Hit at " + angle * 180 / Math.PI;
-                else
-                    indicator = "Miss at " + angle * 180 / Math.PI;
-            }
+        public void getAngle (float angle)
+        {
 
+        }
+
+        public double getError(double actual, double expected)
+        {
+            return Math.Abs(actual-expected)/expected;
+        }
+        
+        public KeyboardState getKeyboardState()
+        {
+            return Keyboard.GetState();
+        }
+
+        public MouseState getMouseState()
+        {
+            return Mouse.GetState();
         }
 
         public double degToRad (double deg)
@@ -141,16 +178,12 @@ namespace GeneratedRPGGame
             return deg * Math.PI / 180;
         }
 
-        private KeyboardState getKey()
-        {
-            KeyboardState curState = Keyboard.GetState();
-            return curState;
-        }
-
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        /// 
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -164,8 +197,8 @@ namespace GeneratedRPGGame
             spriteBatch.Draw(circle, screenCenter, null, Color.White, 0f, imageCenter, 1f, SpriteEffects.None, 0f);
 
             foreach (Fan f in allFans)
-                spriteBatch.Draw(f.texture, screenCenter, null, Color.White, (float) f.angle, imageCenter3, 1f, SpriteEffects.None, 0f);
-
+                spriteBatch.Draw(f.texture, screenCenter, null, Color.White, (float) degToRad(f.angle+f.angleOff), imageCenter3, 1f, SpriteEffects.None, 0f);
+                
             spriteBatch.Draw(line, screenCenter, null, Color.Green, RotationAngle, imageCenter2, 1f, SpriteEffects.None, 0f);
 
             spriteBatch.DrawString(coordinates, indicator, new Vector2(0, 0), Color.Black);
@@ -174,43 +207,14 @@ namespace GeneratedRPGGame
             base.Draw(gameTime);
         }
 
-        private void createAttackCircle(int hits, double[] critHit, double[] okHit)
+        private void createAttackCircle(int hits, float[] critHit, float[] okHit)
         {
             allFans = new List<Fan>();
-            hitArray = createAttackArray(3, critHit, okHit, 100);
-            Color[] cArray = new Color[3] { Color.LightBlue, Color.LightYellow, Color.LightSeaGreen };
-
+         
             for (int i=0; i < hits; i++)
             {
-                allFans.Add(new Fan(drawFan(300, okHit[i], cArray[i]), critHit[i]));
+                allFans.Add(new Fan(drawFan(300, okHit[i], Color.LightBlue), critHit[i], okHit[i]));
             }          
-        }
-
-        private double[] createAttackArray(int numOfHits, double[] hitCrits, double[] hitField, int baseDmg)
-        {
-            double[] atkArray = new double[numOfHits*2];
-
-            for (int i = 0; i < hitCrits.Count()-1;i++ )
-            {
-                atkArray[i]= hitCrits[i] + hitField[i];
-                atkArray[i+1] = hitCrits[i] - hitField[i];
-            }
-            
-            return atkArray;
-        }
-
-        private Boolean checkHit(Vector2 hit, double hitAngel)
-        {
-            double angle = Math.Atan(hit.Y / hit.X);
-            double angleD = angle * 180 / Math.PI;
-            double hitD = hitAngel * 180 / Math.PI;
-
-            double angleE = Math.Abs(hitAngel - angle) / hitAngel;
-
-            if (angleE < 0.50)
-                return true;
-
-            return false;
         }
 
         private Texture2D drawCircle(int radius)
@@ -291,11 +295,13 @@ namespace GeneratedRPGGame
         {
             public Texture2D texture { get; set; }
             public double angle { get; set; }
+            public double angleOff { get; set; }
 
-            public Fan(Texture2D image, double ang)
+            public Fan(Texture2D image, double ang, double ok)
             {
                 texture = image;
                 angle = ang;
+                angleOff = - 0.5 * ok + 45;
             }
         }
     }

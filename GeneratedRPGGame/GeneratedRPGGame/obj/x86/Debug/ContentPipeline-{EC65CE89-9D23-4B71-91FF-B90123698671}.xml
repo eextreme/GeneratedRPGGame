@@ -7,8 +7,8 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Courier New.xnb</Output>
-      <Time>2016-03-05T14:14:28-07:00</Time>
+      <Output>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Courier New.xnb</Output>
+      <Time>2016-03-06T12:52:17.6493545-07:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
@@ -17,10 +17,10 @@
       <TargetProfile>Reach</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGameContent\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGameContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>
@@ -49,7 +49,7 @@
       </Assembly>
       <Assembly>
         <Key>C:\WINDOWS\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
-        <Value>2016-03-05T15:38:04.2340754-07:00</Value>
+        <Value>2016-03-03T14:40:37.1404562-07:00</Value>
       </Assembly>
     </Assemblies>
   </Asset>

@@ -1,0 +1,2 @@
+C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGameContent\obj\x86\Debug\GeneratedRPGGameContent.contentprojResolveAssemblyReference.cache
+C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGameContent\obj\x86\Debug\GeneratedRPGGameContent.contentprojResolveAssemblyReference.cache

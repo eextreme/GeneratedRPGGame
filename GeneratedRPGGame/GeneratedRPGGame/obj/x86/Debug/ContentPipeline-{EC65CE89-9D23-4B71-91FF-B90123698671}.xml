@@ -7,8 +7,35 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
-      <Output>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Courier New.xnb</Output>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Courier New.xnb</Output>
       <Time>2016-03-06T12:52:17.6493545-07:00</Time>
+    </Item>
+    <Item>
+      <Source>glass_ping.wav</Source>
+      <Name>glass_ping</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\glass_ping.xnb</Output>
+      <Time>2016-03-08T09:12:21.4457921-07:00</Time>
+    </Item>
+    <Item>
+      <Source>flyby-Conor.wav</Source>
+      <Name>flyby-Conor</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\flyby-Conor.xnb</Output>
+      <Time>2016-03-08T09:14:23.1642195-07:00</Time>
+    </Item>
+    <Item>
+      <Source>anvil_hit.wav</Source>
+      <Name>anvil_hit</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\anvil_hit.xnb</Output>
+      <Time>2016-03-08T11:54:36.5497152-07:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
@@ -17,10 +44,10 @@
       <TargetProfile>Reach</TargetProfile>
       <BuildConfiguration>Debug</BuildConfiguration>
       <CompressContent>false</CompressContent>
-      <RootDirectory>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGameContent\</RootDirectory>
-      <LoggerRootDirectory>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\</LoggerRootDirectory>
-      <IntermediateDirectory>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\</IntermediateDirectory>
-      <OutputDirectory>C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\</OutputDirectory>
+      <RootDirectory>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGameContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\</OutputDirectory>
     </Settings>
     <Assemblies>
       <Assembly>

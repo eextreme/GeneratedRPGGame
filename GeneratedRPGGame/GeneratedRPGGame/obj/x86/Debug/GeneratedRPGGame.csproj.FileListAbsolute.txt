@@ -22,3 +22,16 @@ C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\Generated
 C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.exe
 C:\Users\eextreme\Desktop\GeneratedRPGGame-2016-03-05\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.pdb
+C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\glass_ping.xnb
+C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\flyby-Conor.xnb
+C:\Users\eextreme\Documents\My Games\My Created Games\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\anvil_hit.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Courier New.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\glass_ping.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\flyby-Conor.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\anvil_hit.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\GeneratedRPGGame.exe
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\GeneratedRPGGame.pdb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.csprojResolveAssemblyReference.cache
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.exe
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.pdb

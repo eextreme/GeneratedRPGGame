@@ -35,3 +35,5 @@ C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.exe
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.pdb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\part1_tileset.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\sprites_map_claudius.xnb

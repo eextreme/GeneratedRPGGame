@@ -19,7 +19,10 @@ namespace GeneratedRPGGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         float[] hitCrit, hitOk;
+        int x = 400, y = 400, xFrame, yFrame;
         CreateAttackCircle newCircle;
+        GenerateMap map;
+        Texture2D person;
 
         public Game1()
         {
@@ -60,10 +63,15 @@ namespace GeneratedRPGGame
             imageCenter2 = new Vector2(line.Width, line.Height);
             imageCenter3 = new Vector2(line.Width, line.Height + 150);*/
             
-            hitCrit = new float[3] { 60, 180, 270 };
-            hitOk = new float[3] { 60, 60, 60 };
+            hitCrit = new float[5] { 140, 200, 260, 300, 340 };
+            hitOk = new float[5] { 60, 70, 70, 80, 85 };
 
             newCircle = new CreateAttackCircle(hitCrit, hitOk, 300, graphics.GraphicsDevice);
+            map = new GenerateMap(10, 10, Content);
+
+            person = Content.Load<Texture2D>("sprites_map_claudius");
+            xFrame = person.Width / 6;
+            yFrame = person.Height / 4;
 
             base.Initialize();
         }
@@ -76,8 +84,9 @@ namespace GeneratedRPGGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            
 
-            newCircle.LoadContent(Content);
+            //newCircle.LoadContent(Content);
             
             /*
             coordinates = Content.Load<SpriteFont>("Courier New");
@@ -85,6 +94,85 @@ namespace GeneratedRPGGame
             miss = Content.Load<SoundEffect>("flyby-Conor");*/
 
             // TODO: use this.Content to load your game content here
+        }
+
+        public KeyboardState getKey()
+        {
+            return Keyboard.GetState();
+        }
+
+        int i = 0;
+        public void movingNorth()
+        {  
+            if (getKey().IsKeyDown(Keys.Up)) 
+            {
+                Rectangle curLoc = new Rectangle(x,y,xFrame, yFrame);
+                Rectangle curAnimation = new Rectangle(xFrame * i, 2*yFrame, xFrame, yFrame);
+                spriteBatch.Draw(person,curLoc, curAnimation, Color.White);
+                i++; y = y - 10;
+                
+                if (i>6)
+                {
+                    i = 0;
+                }
+
+                graphics.GraphicsDevice.Clear(Color.White);
+            }
+        }
+
+        public void movingSouth()
+        {
+            if (getKey().IsKeyDown(Keys.Down))
+            {
+                Rectangle curLoc = new Rectangle(x, y, xFrame, yFrame);
+                Rectangle curAnimation = new Rectangle(xFrame * i, 0 * yFrame, xFrame, yFrame);
+                spriteBatch.Draw(person, curLoc, curAnimation, Color.White);
+                i++; y = y + 10;
+
+                if (i > 6)
+                {
+                    i = 0;
+                }
+                
+                graphics.GraphicsDevice.Clear(Color.White);
+            }
+        }
+
+        public void movingEast()
+        {
+            if (getKey().IsKeyDown(Keys.Right))
+            {
+                Rectangle curLoc = new Rectangle(x, y, xFrame, yFrame);
+                Rectangle curAnimation = new Rectangle(xFrame * i, 3 * yFrame, xFrame, yFrame);
+                spriteBatch.Draw(person, curLoc, curAnimation, Color.White);
+                i++; x = x + 10;
+
+                if (i > 6)
+                {
+                    i = 0;
+                }
+
+                graphics.GraphicsDevice.Clear(Color.White);
+            }
+
+        }
+
+        public void movingWest()
+        {
+            if (getKey().IsKeyDown(Keys.Left))
+            {
+                Rectangle curLoc = new Rectangle(x, y, xFrame, yFrame);
+                Rectangle curAnimation = new Rectangle(xFrame * i, 1 * yFrame, xFrame, yFrame);
+                spriteBatch.Draw(person, curLoc, curAnimation, Color.White);
+                i++; x = x - 10;
+
+                if (i > 6)
+                {
+                    i = 0;
+                }
+
+                graphics.GraphicsDevice.Clear(Color.White);
+            }
         }
 
         /// <summary>
@@ -108,7 +196,9 @@ namespace GeneratedRPGGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            newCircle.Update(gameTime);
+            getKey();
+
+            //newCircle.Update(gameTime);
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -122,15 +212,19 @@ namespace GeneratedRPGGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
 
            
-            graphics.GraphicsDevice.Clear(Color.White);
+            
 
             spriteBatch.Begin();
-            newCircle.Draw(spriteBatch);
+            //map.Draw(spriteBatch);
+            //newCircle.Draw(spriteBatch);
+            movingNorth();
+            movingSouth();
+            movingEast();
+            movingWest();
             spriteBatch.End();
 
             base.Draw(gameTime);

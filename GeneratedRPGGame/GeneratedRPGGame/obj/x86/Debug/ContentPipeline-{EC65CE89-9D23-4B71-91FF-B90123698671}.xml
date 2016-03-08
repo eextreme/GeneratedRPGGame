@@ -37,6 +37,24 @@
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\anvil_hit.xnb</Output>
       <Time>2016-03-08T11:54:36.5497152-07:00</Time>
     </Item>
+    <Item>
+      <Source>part1_tileset.png</Source>
+      <Name>part1_tileset</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\part1_tileset.xnb</Output>
+      <Time>2016-03-08T14:46:03.6272262-07:00</Time>
+    </Item>
+    <Item>
+      <Source>sprites_map_claudius.png</Source>
+      <Name>sprites_map_claudius</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\sprites_map_claudius.xnb</Output>
+      <Time>2016-03-08T16:09:28.056547-07:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{EC65CE89-9D23-4B71-91FF-B90123698671}</ContentProjectGUID>

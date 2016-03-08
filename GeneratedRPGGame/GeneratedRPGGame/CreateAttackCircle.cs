@@ -48,9 +48,15 @@ namespace GeneratedRPGGame
 
             allFans = new List<Fan>();
             critFans = new List<Fan>();
+
+            allFans.Clear();
+
+            Color[] list = new Color[3] { Color.Yellow, Color.Tomato, Color.Thistle };
+
             for (int i = 0; i < hits; i++)
             {
-                allFans.Add(new Fan(drawFan(radius, hitOkL[i], Color.Yellow), hitCritL[i], hitOkL[i]));
+                allFans.Add(new Fan(drawFan(radius, hitOk[i], Color.Yellow), hitCrit[i], hitOk[i]));
+                allFans.Add(new Fan(drawFan(radius, 85, Color.Red), hitCrit[i], 85));
             }
         }
 
@@ -86,7 +92,7 @@ namespace GeneratedRPGGame
                 {
                     double error = getError(angle, degToRad(hitCrit[current]));
                     double errorOk = Math.Abs(1 - hitOk[current] / 90);
-                    if (error<= 0.06)
+                    if (error<= 0.05)
                     {
                         indicator = "Critical Hit! With " + hitCrit[current] + " at " + angle*180/Math.PI;
                         circleCrit();
@@ -149,7 +155,10 @@ namespace GeneratedRPGGame
             atkCircleGraphic.Draw(circle, screenCenter, null, Color.White, 0f, imageCenter, 1f, SpriteEffects.None, 0f);
 
             foreach (Fan f in allFans)
-                    atkCircleGraphic.Draw(f.texture, screenCenter, null, Color.White, (float) degToRad(f.angle+f.angleOff), imageCenter3, 1f, SpriteEffects.None, 0f);
+                atkCircleGraphic.Draw(f.texture, screenCenter, null, Color.White, (float)degToRad(f.angle + f.angleOff - 90), imageCenter3, 1f, SpriteEffects.None, 0f);
+
+            foreach (Fan f in critFans)
+                atkCircleGraphic.Draw(f.texture, screenCenter, null, Color.White, (float)degToRad(f.angle + f.angleOff - 90), imageCenter3, 1f, SpriteEffects.None, 0f);
 
             atkCircleGraphic.Draw(line, screenCenter, null, Color.White, RotationAngle, imageCenter2, 1f, SpriteEffects.None, 0f);
 

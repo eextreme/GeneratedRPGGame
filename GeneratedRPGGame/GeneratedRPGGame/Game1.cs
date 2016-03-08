@@ -60,8 +60,8 @@ namespace GeneratedRPGGame
             imageCenter2 = new Vector2(line.Width, line.Height);
             imageCenter3 = new Vector2(line.Width, line.Height + 150);*/
             
-            hitCrit = new float[3] { 90, 240, 360 };
-            hitOk = new float[3] { 75, 75, 75 };
+            hitCrit = new float[3] { 60, 180, 270 };
+            hitOk = new float[3] { 60, 60, 60 };
 
             newCircle = new CreateAttackCircle(hitCrit, hitOk, 300, graphics.GraphicsDevice);
 

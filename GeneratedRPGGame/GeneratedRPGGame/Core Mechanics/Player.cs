@@ -54,9 +54,7 @@ namespace GeneratedRPGGame.Core_Mechanics
             { yRef = 3; frame++; xMod = 10; angle = MathHelper.PiOver2; wOffsetX = 128; wOffsetY = 0; }
 
             if (frame > numOfFrames) { frame = 0; }
-
-            angle = (float)Math.Atan(yMod / xMod);
-            
+           
             posX = posX + xMod; posY = posY + yMod;
             curLoc = new Rectangle(posX, posY, xFrames, yFrames);
             curAnimation = new Rectangle(xFrames * frame, yRef * yFrames, xFrames, yFrames);

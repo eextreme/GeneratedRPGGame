@@ -19,10 +19,10 @@ namespace GeneratedRPGGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         float[] hitCrit, hitOk;
-        int x = 400, y = 400, xFrame, yFrame;
+        int x = 400, y = 400, xFrame, yFrame, fxFrame, fyFrame;
         CreateAttackCircle newCircle;
         GenerateMap map;
-        Texture2D person;
+        Texture2D person, fireball;
 
         public Game1()
         {
@@ -73,6 +73,11 @@ namespace GeneratedRPGGame
             xFrame = person.Width / 6;
             yFrame = person.Height / 4;
 
+            fireball = Content.Load<Texture2D>("FireBall");
+            fxFrame = fireball.Width / 3;
+            fyFrame = fireball.Height / 4;
+
+
             base.Initialize();
         }
 
@@ -83,8 +88,7 @@ namespace GeneratedRPGGame
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+            spriteBatch = new SpriteBatch(GraphicsDevice);            
 
             //newCircle.LoadContent(Content);
             
@@ -96,83 +100,54 @@ namespace GeneratedRPGGame
             // TODO: use this.Content to load your game content here
         }
 
-        public KeyboardState getKey()
+        public KeyboardState getKey() { return Keyboard.GetState();}
+        public MouseState getMouse() { return Mouse.GetState(); }
+        
+        int i = 0, yRef = 0;
+        Rectangle curLoc, curAnimation;
+        public void move()
         {
-            return Keyboard.GetState();
-        }
+            int yMod = 0, xMod = 0;
 
-        int i = 0;
-        public void movingNorth()
-        {  
-            if (getKey().IsKeyDown(Keys.Up)) 
-            {
-                Rectangle curLoc = new Rectangle(x,y,xFrame, yFrame);
-                Rectangle curAnimation = new Rectangle(xFrame * i, 2*yFrame, xFrame, yFrame);
-                spriteBatch.Draw(person,curLoc, curAnimation, Color.White);
-                i++; y = y - 10;
-                
-                if (i>6)
-                {
-                    i = 0;
-                }
-
-                graphics.GraphicsDevice.Clear(Color.White);
-            }
-        }
-
-        public void movingSouth()
-        {
             if (getKey().IsKeyDown(Keys.Down))
-            {
-                Rectangle curLoc = new Rectangle(x, y, xFrame, yFrame);
-                Rectangle curAnimation = new Rectangle(xFrame * i, 0 * yFrame, xFrame, yFrame);
-                spriteBatch.Draw(person, curLoc, curAnimation, Color.White);
-                i++; y = y + 10;
+            { yRef = 0; i++; yMod = 10; xMod = 0; }
 
-                if (i > 6)
-                {
-                    i = 0;
-                }
-                
-                graphics.GraphicsDevice.Clear(Color.White);
-            }
-        }
-
-        public void movingEast()
-        {
-            if (getKey().IsKeyDown(Keys.Right))
-            {
-                Rectangle curLoc = new Rectangle(x, y, xFrame, yFrame);
-                Rectangle curAnimation = new Rectangle(xFrame * i, 3 * yFrame, xFrame, yFrame);
-                spriteBatch.Draw(person, curLoc, curAnimation, Color.White);
-                i++; x = x + 10;
-
-                if (i > 6)
-                {
-                    i = 0;
-                }
-
-                graphics.GraphicsDevice.Clear(Color.White);
-            }
-
-        }
-
-        public void movingWest()
-        {
             if (getKey().IsKeyDown(Keys.Left))
+            { yRef = 1; i++; yMod = 0; xMod = -10; }
+
+            if (getKey().IsKeyDown(Keys.Up))
+            { yRef = 2; i++; yMod = -10; xMod = 0; }
+
+            if (getKey().IsKeyDown(Keys.Right))
+            { yRef = 3; i++; yMod = 0; xMod = 10; }
+
+            if (i > 5) { i = 0; }
+
+            x = x + xMod; y = y + yMod;
+            curLoc = new Rectangle(x, y, xFrame, yFrame);
+            curAnimation = new Rectangle(xFrame * i, yRef * yFrame, xFrame, yFrame);
+
+        }
+
+        int fyRef = 0;int fx=0, fy=0;
+        int yMod=0, xMod=0;
+        Rectangle curLoc2, curAnimation2;
+        private void shootFireball(int x, int y)
+        {
+            if (getMouse().LeftButton== ButtonState.Pressed)
             {
-                Rectangle curLoc = new Rectangle(x, y, xFrame, yFrame);
-                Rectangle curAnimation = new Rectangle(xFrame * i, 1 * yFrame, xFrame, yFrame);
-                spriteBatch.Draw(person, curLoc, curAnimation, Color.White);
-                i++; x = x - 10;
-
-                if (i > 6)
-                {
-                    i = 0;
-                }
-
-                graphics.GraphicsDevice.Clear(Color.White);
+                fx = 0; fy = 0;
+                if (yRef == 0) { i++; fyRef = 0; yMod = 10; xMod = 0;  }
+                if (yRef == 1) { i++; fyRef = 1; yMod = 0; xMod = -10; }
+                if (yRef == 2) { i++; fyRef = 3; yMod = -10; xMod = 0; }
+                if (yRef == 3) { i++; fyRef = 2; yMod = 0; xMod = 10;  }               
             }
+
+            fx=fx+xMod; fy=fy+yMod;
+            curLoc2 = new Rectangle(x+fx, y+fy, xFrame, yFrame);
+            curAnimation2 = new Rectangle(fxFrame * i, fyRef * fyFrame, fxFrame, fyFrame);
+
+            if (i>3) { i = 0; }
         }
 
         /// <summary>
@@ -196,7 +171,8 @@ namespace GeneratedRPGGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            getKey();
+            move();
+            shootFireball(x,y);
 
             //newCircle.Update(gameTime);
             // TODO: Add your update logic here
@@ -212,22 +188,19 @@ namespace GeneratedRPGGame
 
         protected override void Draw(GameTime gameTime)
         {
-
+            graphics.GraphicsDevice.Clear(Color.White);
             // TODO: Add your drawing code here
-
-           
-            
 
             spriteBatch.Begin();
             //map.Draw(spriteBatch);
             //newCircle.Draw(spriteBatch);
-            movingNorth();
-            movingSouth();
-            movingEast();
-            movingWest();
+            spriteBatch.Draw(person, curLoc, curAnimation, Color.White);
+            spriteBatch.Draw(fireball, curLoc2, curAnimation2, Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
+
     }
 }

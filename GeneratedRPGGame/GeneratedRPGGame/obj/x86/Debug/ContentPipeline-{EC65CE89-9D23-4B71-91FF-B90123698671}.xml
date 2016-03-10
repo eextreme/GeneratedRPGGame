@@ -8,7 +8,7 @@
       <Processor>FontDescriptionProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Courier New.xnb</Output>
-      <Time>2016-03-06T12:52:17.6493545-07:00</Time>
+      <Time>2016-03-08T16:55:38.921684-07:00</Time>
     </Item>
     <Item>
       <Source>glass_ping.wav</Source>
@@ -17,7 +17,7 @@
       <Processor>SoundEffectProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\glass_ping.xnb</Output>
-      <Time>2016-03-08T09:12:21.4457921-07:00</Time>
+      <Time>2016-03-08T16:55:38.921684-07:00</Time>
     </Item>
     <Item>
       <Source>flyby-Conor.wav</Source>
@@ -26,7 +26,7 @@
       <Processor>SoundEffectProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\flyby-Conor.xnb</Output>
-      <Time>2016-03-08T09:14:23.1642195-07:00</Time>
+      <Time>2016-03-08T16:55:38.921684-07:00</Time>
     </Item>
     <Item>
       <Source>anvil_hit.wav</Source>
@@ -35,7 +35,7 @@
       <Processor>SoundEffectProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\anvil_hit.xnb</Output>
-      <Time>2016-03-08T11:54:36.5497152-07:00</Time>
+      <Time>2016-03-08T16:55:38.921684-07:00</Time>
     </Item>
     <Item>
       <Source>part1_tileset.png</Source>
@@ -44,7 +44,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\part1_tileset.xnb</Output>
-      <Time>2016-03-08T14:46:03.6272262-07:00</Time>
+      <Time>2016-03-08T16:55:38.9373094-07:00</Time>
     </Item>
     <Item>
       <Source>sprites_map_claudius.png</Source>
@@ -53,7 +53,16 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\sprites_map_claudius.xnb</Output>
-      <Time>2016-03-08T16:09:28.056547-07:00</Time>
+      <Time>2016-03-08T16:55:38.9373094-07:00</Time>
+    </Item>
+    <Item>
+      <Source>FireBall.png</Source>
+      <Name>FireBall</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\FireBall.xnb</Output>
+      <Time>2016-03-08T17:32:22.3714769-07:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
@@ -94,7 +103,7 @@
       </Assembly>
       <Assembly>
         <Key>C:\WINDOWS\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
-        <Value>2016-03-03T14:40:37.1404562-07:00</Value>
+        <Value>2016-03-05T15:38:04.2340754-07:00</Value>
       </Assembly>
     </Assemblies>
   </Asset>

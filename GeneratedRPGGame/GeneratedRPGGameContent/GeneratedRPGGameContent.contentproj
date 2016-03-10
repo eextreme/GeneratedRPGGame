@@ -37,43 +37,50 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="glass_ping.wav">
+    <Compile Include="Sound Effects\glass_ping.wav">
       <Name>glass_ping</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="flyby-Conor.wav">
+    <Compile Include="Sound Effects\flyby-Conor.wav">
       <Name>flyby-Conor</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="anvil_hit.wav">
+    <Compile Include="Sound Effects\anvil_hit.wav">
       <Name>anvil_hit</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="part1_tileset.png">
+    <Compile Include="Tile Sets\part1_tileset.png">
       <Name>part1_tileset</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="sprites_map_claudius.png">
+    <Compile Include="Sprite Sheets\sprites_map_claudius.png">
       <Name>sprites_map_claudius</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FireBall.png">
+    <Compile Include="Sprite Sheets\FireBall.png">
       <Name>FireBall</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprite Sheets\spear.png">
+      <Name>spear</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

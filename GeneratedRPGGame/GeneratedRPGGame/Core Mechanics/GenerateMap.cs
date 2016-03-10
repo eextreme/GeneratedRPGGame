@@ -19,7 +19,7 @@ namespace GeneratedRPGGame
 
         public GenerateMap(int x, int y, ContentManager content)
         {
-            tiles = new tileSet("Practice", content.Load<Texture2D>("part1_tileset"));
+            tiles = new tileSet("Practice", content.Load<Texture2D>("Tile Sets/part1_tileset"));
             Texture2D[,] test = new Texture2D[x, y];
         }
 

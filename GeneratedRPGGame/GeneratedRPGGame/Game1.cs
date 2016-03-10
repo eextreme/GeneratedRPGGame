@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using GeneratedRPGGame.Core_Mechanics;
+
 namespace GeneratedRPGGame
 {
     /// <summary>
@@ -18,11 +20,13 @@ namespace GeneratedRPGGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont coordinates;
         float[] hitCrit, hitOk;
         int x = 400, y = 400, xFrame, yFrame, fxFrame, fyFrame;
         CreateAttackCircle newCircle;
         GenerateMap map;
         Texture2D person, fireball;
+        Player newPlayer;
 
         public Game1()
         {
@@ -69,15 +73,10 @@ namespace GeneratedRPGGame
             newCircle = new CreateAttackCircle(hitCrit, hitOk, 300, graphics.GraphicsDevice);
             map = new GenerateMap(10, 10, Content);
 
-            person = Content.Load<Texture2D>("sprites_map_claudius");
-            xFrame = person.Width / 6;
-            yFrame = person.Height / 4;
-
-            fireball = Content.Load<Texture2D>("FireBall");
-            fxFrame = fireball.Width / 3;
-            fyFrame = fireball.Height / 4;
-
-
+            newPlayer = new Player(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4);
+            newPlayer.equipWeapon(Content.Load <Texture2D> ("Sprite Sheets/spear"));
+            newPlayer.setSpawnPoint(400, 400);
+            
             base.Initialize();
         }
 
@@ -92,9 +91,8 @@ namespace GeneratedRPGGame
 
             //newCircle.LoadContent(Content);
             
-            /*
             coordinates = Content.Load<SpriteFont>("Courier New");
-            hit = Content.Load<SoundEffect>("glass_ping");
+            /*hit = Content.Load<SoundEffect>("glass_ping");
             miss = Content.Load<SoundEffect>("flyby-Conor");*/
 
             // TODO: use this.Content to load your game content here
@@ -102,54 +100,7 @@ namespace GeneratedRPGGame
 
         public KeyboardState getKey() { return Keyboard.GetState();}
         public MouseState getMouse() { return Mouse.GetState(); }
-        
-        int i = 0, yRef = 0;
-        Rectangle curLoc, curAnimation;
-        public void move()
-        {
-            int yMod = 0, xMod = 0;
-
-            if (getKey().IsKeyDown(Keys.Down))
-            { yRef = 0; i++; yMod = 10; xMod = 0; }
-
-            if (getKey().IsKeyDown(Keys.Left))
-            { yRef = 1; i++; yMod = 0; xMod = -10; }
-
-            if (getKey().IsKeyDown(Keys.Up))
-            { yRef = 2; i++; yMod = -10; xMod = 0; }
-
-            if (getKey().IsKeyDown(Keys.Right))
-            { yRef = 3; i++; yMod = 0; xMod = 10; }
-
-            if (i > 5) { i = 0; }
-
-            x = x + xMod; y = y + yMod;
-            curLoc = new Rectangle(x, y, xFrame, yFrame);
-            curAnimation = new Rectangle(xFrame * i, yRef * yFrame, xFrame, yFrame);
-
-        }
-
-        int fyRef = 0;int fx=0, fy=0;
-        int yMod=0, xMod=0;
-        Rectangle curLoc2, curAnimation2;
-        private void shootFireball(int x, int y)
-        {
-            if (getMouse().LeftButton== ButtonState.Pressed)
-            {
-                fx = 0; fy = 0;
-                if (yRef == 0) { i++; fyRef = 0; yMod = 10; xMod = 0;  }
-                if (yRef == 1) { i++; fyRef = 1; yMod = 0; xMod = -10; }
-                if (yRef == 2) { i++; fyRef = 3; yMod = -10; xMod = 0; }
-                if (yRef == 3) { i++; fyRef = 2; yMod = 0; xMod = 10;  }               
-            }
-
-            fx=fx+xMod; fy=fy+yMod;
-            curLoc2 = new Rectangle(x+fx, y+fy, xFrame, yFrame);
-            curAnimation2 = new Rectangle(fxFrame * i, fyRef * fyFrame, fxFrame, fyFrame);
-
-            if (i>3) { i = 0; }
-        }
-
+                
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
@@ -171,8 +122,7 @@ namespace GeneratedRPGGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            move();
-            shootFireball(x,y);
+            newPlayer.move();
 
             //newCircle.Update(gameTime);
             // TODO: Add your update logic here
@@ -194,8 +144,8 @@ namespace GeneratedRPGGame
             spriteBatch.Begin();
             //map.Draw(spriteBatch);
             //newCircle.Draw(spriteBatch);
-            spriteBatch.Draw(person, curLoc, curAnimation, Color.White);
-            spriteBatch.Draw(fireball, curLoc2, curAnimation2, Color.White);
+            //spriteBatch.DrawString(coordinates, newPlayer.getPosition(), new Vector2(newPlayer.posX, newPlayer.posY), Color.Black);
+            newPlayer.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

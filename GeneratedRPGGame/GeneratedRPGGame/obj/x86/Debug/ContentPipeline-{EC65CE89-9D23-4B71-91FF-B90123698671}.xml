@@ -82,6 +82,24 @@
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\simple circle.xnb</Output>
       <Time>2016-03-11T09:49:12.0088992-07:00</Time>
     </Item>
+    <Item>
+      <Source>Sprite Sheets\monsterSprite.png</Source>
+      <Name>Sprite Sheets\monsterSprite</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\monsterSprite.xnb</Output>
+      <Time>2016-03-11T13:14:58.0862562-07:00</Time>
+    </Item>
+    <Item>
+      <Source>Sprite Sheets\simpleMonster.png</Source>
+      <Name>Sprite Sheets\simpleMonster</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\simpleMonster.xnb</Output>
+      <Time>2016-03-11T13:28:17.2351147-07:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{EC65CE89-9D23-4B71-91FF-B90123698671}</ContentProjectGUID>

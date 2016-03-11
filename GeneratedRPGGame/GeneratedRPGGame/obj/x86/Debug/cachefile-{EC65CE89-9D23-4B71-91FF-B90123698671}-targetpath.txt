@@ -7,3 +7,5 @@ Content\Sprite Sheets\sprites_map_claudius.xnb
 Content\Sprite Sheets\FireBall.xnb
 Content\Sprite Sheets\spear.xnb
 Content\simple circle.xnb
+Content\Sprite Sheets\monsterSprite.xnb
+Content\Sprite Sheets\simpleMonster.xnb

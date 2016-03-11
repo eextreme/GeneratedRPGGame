@@ -22,14 +22,13 @@ namespace GeneratedRPGGame
         SpriteBatch spriteBatch;
         SpriteFont coordinates;
         float[] hitCrit, hitOk;
-        int hits = 0;
-        CreateAttackCircle newCircle;
-        GenerateMap map;
-        Texture2D person, target;
+        int hits = 0;       
+        Texture2D monster, target;
         
         
         Player newPlayer;
         Weapon newWeapon;
+        Monster newMonster;
         
         
         String indicator="";
@@ -79,7 +78,7 @@ namespace GeneratedRPGGame
             hitOk = new float[5] { 60, 70, 70, 80, 85 };
 
             newPlayer = new Player(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4);
-            newWeapon = new Weapon(Content.Load<Texture2D>("Sprite Sheets/spear"), hitCrit, hitOk, 200, graphics.GraphicsDevice, 0.3f, 10);
+            newWeapon = new Weapon(Content.Load<Texture2D>("Sprite Sheets/spear"), hitCrit, hitOk, 200, graphics.GraphicsDevice, 0.3f, 10, 30);
             newWeapon.setOffSet(140, 128);
 
             newPlayer.equipWeapon(newWeapon);
@@ -87,7 +86,10 @@ namespace GeneratedRPGGame
 
             newWeapon.atkCircle.LoadContent(Content);
 
-            target = Content.Load<Texture2D>("simple circle");
+            newMonster = new Monster(Content.Load<Texture2D>("simple circle"), 200, 10, 12, 4, 1f, 0.6f, 0, 1, 1);
+            newMonster.spawnMonster(700, 700);
+
+            //target = Content.Load<Texture2D>("simple circle");
             
             base.Initialize();
         }
@@ -128,7 +130,7 @@ namespace GeneratedRPGGame
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
 
-        int targX = 600, targY = 600; int targModX = 0, targModY = 0;
+        int targModX = 0, targModY = 0;
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
@@ -136,26 +138,26 @@ namespace GeneratedRPGGame
                 this.Exit();
 
             
-            if (checkCollision(new Rectangle(newPlayer.aPosX,newPlayer.aPoxY,20,5), new Rectangle(targX, targY, target.Width, target.Height)))
+            if (checkCollision(new Rectangle(newPlayer.aPosX,newPlayer.aPoxY,20,5), newMonster.getHitBox()))
             {
                 if (getKey().IsKeyDown(Keys.Space) && !keyDownState)
                 {
                     hits++;
                     indicator = "You hit the ball: " + hits + " time";
-                    
+
                     if (newPlayer.getPlayerDir() == "Up")
-                        targModY = 30;
+                        targModY = newWeapon.hitForce;
 
                     if (newPlayer.getPlayerDir() == "Down")
-                        targModY = 30;
+                        targModY = -newWeapon.hitForce;
 
                     if (newPlayer.getPlayerDir() == "Right")
-                        targModX = 30;
+                        targModX = -newWeapon.hitForce;
 
                     if (newPlayer.getPlayerDir() == "Left")
-                        targModX = 30;
+                        targModX = newWeapon.hitForce;
 
-                    targX += targModX; targY += targModY;
+                    newMonster.knockBack(targModX, targModY);
                     
                     keyDownState = true;
                     
@@ -182,21 +184,11 @@ namespace GeneratedRPGGame
             if (showAtkCircle == false && gameOver==false)
             {
                 //normal update functions
-                if (newPlayer.posX > targX)
-                    targX += 4;
-
-                if (newPlayer.posX < targX)
-                    targX -= 4;
-
-                if (newPlayer.posY > targY)
-                    targY += 4;
-
-                if (newPlayer.posY < targY)
-                    targY -= 4;
+                newMonster.MoveWithBasicAI(newPlayer.posX, newPlayer.aPoxY);
                                 
                 newPlayer.move();
 
-                if (checkCollision(new Rectangle(newPlayer.posX, newPlayer.posY, 10, 20),new Rectangle(targX, targY, target.Width, target.Height)))
+                if (checkCollision(new Rectangle(newPlayer.posX, newPlayer.posY, 10, 20), newMonster.getHitBox()))
                     gameOver = true;
 
             }
@@ -226,8 +218,9 @@ namespace GeneratedRPGGame
             }
             
             spriteBatch.DrawString(coordinates, indicator, new Vector2(0,700), Color.Black);
+            newMonster.Draw(spriteBatch);
             newPlayer.Draw(spriteBatch);
-            spriteBatch.Draw(target, new Rectangle(targX, targY, target.Width, target.Height), Color.White);
+
 
             if (gameOver == true)
                 spriteBatch.DrawString(coordinates, "Game Over, you scored: " + hits + " points", new Vector2(400, 700), Color.Black);

@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Core Mechanics\CreateAttackCircle.cs" />
     <Compile Include="Core Mechanics\GenerateMap.cs" />
+    <Compile Include="Core Mechanics\Monster.cs" />
     <Compile Include="Core Mechanics\Player.cs" />
     <Compile Include="Core Mechanics\Weapon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

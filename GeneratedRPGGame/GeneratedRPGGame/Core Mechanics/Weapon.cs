@@ -17,16 +17,16 @@ namespace GeneratedRPGGame.Core_Mechanics
         public Texture2D weaponSprite;
         public float wepOffsetX, wepOffsetY;
         public CreateAttackCircle atkCircle;
-        float scaleFactor;
-        int combo;
+        public int combo, hitForce;
 
-        public Weapon(Texture2D weap, float[] hitCritL, float[] hitOkL, int r, GraphicsDevice device, float scaleF, int combos)
+        public Weapon(Texture2D weap, float[] hitCritL, float[] hitOkL, int r, GraphicsDevice device, float scaleF, int combos, int force)
         {
             weaponSprite = weap;
             atkCircle = new CreateAttackCircle(hitCritL, hitOkL, 200, device);
             wepOffsetX = weaponSprite.Width * scaleF;
             wepOffsetY = weaponSprite.Height * scaleF;
             combo = combos;
+            hitForce = force;
         }
 
         public void setOffSet(int x, int y)

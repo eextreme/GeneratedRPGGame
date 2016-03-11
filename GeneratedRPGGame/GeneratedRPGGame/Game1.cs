@@ -22,11 +22,19 @@ namespace GeneratedRPGGame
         SpriteBatch spriteBatch;
         SpriteFont coordinates;
         float[] hitCrit, hitOk;
-        int x = 400, y = 400, xFrame, yFrame, fxFrame, fyFrame;
+        int hits = 0;
         CreateAttackCircle newCircle;
         GenerateMap map;
-        Texture2D person, fireball;
+        Texture2D person, target;
+        
+        
         Player newPlayer;
+        Weapon newWeapon;
+        
+        
+        String indicator="";
+        bool keyDownState = false, showAtkCircle = false, gameOver = false;
+   
 
         public Game1()
         {
@@ -70,12 +78,16 @@ namespace GeneratedRPGGame
             hitCrit = new float[5] { 140, 200, 260, 300, 340 };
             hitOk = new float[5] { 60, 70, 70, 80, 85 };
 
-            newCircle = new CreateAttackCircle(hitCrit, hitOk, 300, graphics.GraphicsDevice);
-            map = new GenerateMap(10, 10, Content);
-
             newPlayer = new Player(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4);
-            newPlayer.equipWeapon(Content.Load <Texture2D> ("Sprite Sheets/spear"));
-            newPlayer.setSpawnPoint(400, 400);
+            newWeapon = new Weapon(Content.Load<Texture2D>("Sprite Sheets/spear"), hitCrit, hitOk, 200, graphics.GraphicsDevice, 0.3f, 10);
+            newWeapon.setOffSet(140, 128);
+
+            newPlayer.equipWeapon(newWeapon);
+            newPlayer.setSpawnPoint(200, 200);
+
+            newWeapon.atkCircle.LoadContent(Content);
+
+            target = Content.Load<Texture2D>("simple circle");
             
             base.Initialize();
         }
@@ -116,13 +128,78 @@ namespace GeneratedRPGGame
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
 
+        int targX = 600, targY = 600; int targModX = 0, targModY = 0;
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            newPlayer.move();
+            
+            if (checkCollision(new Rectangle(newPlayer.aPosX,newPlayer.aPoxY,20,5), new Rectangle(targX, targY, target.Width, target.Height)))
+            {
+                if (getKey().IsKeyDown(Keys.Space) && !keyDownState)
+                {
+                    hits++;
+                    indicator = "You hit the ball: " + hits + " time";
+                    
+                    if (newPlayer.getPlayerDir() == "Up")
+                        targModY = 30;
+
+                    if (newPlayer.getPlayerDir() == "Down")
+                        targModY = 30;
+
+                    if (newPlayer.getPlayerDir() == "Right")
+                        targModX = 30;
+
+                    if (newPlayer.getPlayerDir() == "Left")
+                        targModX = 30;
+
+                    targX += targModX; targY += targModY;
+                    
+                    keyDownState = true;
+                    
+                }
+
+                if (!getKey().IsKeyDown(Keys.Space))
+                    keyDownState = false;
+            }
+
+            if (newWeapon.comboReached(hits) && getKey().IsKeyDown(Keys.LeftShift))
+            {
+               showAtkCircle = true;
+               newWeapon.atkCircle.isEnd = false;
+               hits = 0;
+             }
+
+             if (showAtkCircle == true)
+             {
+                newWeapon.atkCircle.Update(gameTime);
+                    if (newWeapon.atkCircle.isEnd)
+                        showAtkCircle = false;
+             }
+
+            if (showAtkCircle == false && gameOver==false)
+            {
+                //normal update functions
+                if (newPlayer.posX > targX)
+                    targX += 4;
+
+                if (newPlayer.posX < targX)
+                    targX -= 4;
+
+                if (newPlayer.posY > targY)
+                    targY += 4;
+
+                if (newPlayer.posY < targY)
+                    targY -= 4;
+                                
+                newPlayer.move();
+
+                if (checkCollision(new Rectangle(newPlayer.posX, newPlayer.posY, 10, 20),new Rectangle(targX, targY, target.Width, target.Height)))
+                    gameOver = true;
+
+            }
 
             //newCircle.Update(gameTime);
             // TODO: Add your update logic here
@@ -143,12 +220,26 @@ namespace GeneratedRPGGame
 
             spriteBatch.Begin();
             //map.Draw(spriteBatch);
-            //newCircle.Draw(spriteBatch);
-            //spriteBatch.DrawString(coordinates, newPlayer.getPosition(), new Vector2(newPlayer.posX, newPlayer.posY), Color.Black);
+            if (showAtkCircle == true)
+            {
+                newWeapon.atkCircle.Draw(spriteBatch);
+            }
+            
+            spriteBatch.DrawString(coordinates, indicator, new Vector2(0,700), Color.Black);
             newPlayer.Draw(spriteBatch);
+            spriteBatch.Draw(target, new Rectangle(targX, targY, target.Width, target.Height), Color.White);
+
+            if (gameOver == true)
+                spriteBatch.DrawString(coordinates, "Game Over, you scored: " + hits + " points", new Vector2(400, 700), Color.Black);
+            
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public Boolean checkCollision(Rectangle a, Rectangle b)
+        {
+            return a.Intersects(b);
         }
 
 

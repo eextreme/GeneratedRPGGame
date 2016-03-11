@@ -39,3 +39,4 @@ C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\sprites_map_claudius.xnb
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\FireBall.xnb
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\spear.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\simple circle.xnb

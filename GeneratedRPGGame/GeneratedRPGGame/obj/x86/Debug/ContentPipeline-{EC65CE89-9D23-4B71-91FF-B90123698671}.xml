@@ -73,6 +73,15 @@
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\spear.xnb</Output>
       <Time>2016-03-10T12:04:22.1655951-07:00</Time>
     </Item>
+    <Item>
+      <Source>simple circle.png</Source>
+      <Name>simple circle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\simple circle.xnb</Output>
+      <Time>2016-03-11T09:49:12.0088992-07:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{EC65CE89-9D23-4B71-91FF-B90123698671}</ContentProjectGUID>

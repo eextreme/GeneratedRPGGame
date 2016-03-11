@@ -23,6 +23,7 @@ namespace GeneratedRPGGame
         Vector2 screenCenter, imageCenter, imageCenter2, imageCenter3;
         SoundEffect hit, miss, crit;
         int hits, radius;
+        public bool isEnd = false;
 
         public CreateAttackCircle(float[] hitCritL, float[] hitOkL, int r, GraphicsDevice device)
         {
@@ -41,7 +42,7 @@ namespace GeneratedRPGGame
             circle = drawCircle(radius, Color.LightBlue);
             line = drawLine(radius / 2, Color.Green);
 
-            screenCenter = new Vector2(400, 400);
+            screenCenter = new Vector2(700, 100);
             imageCenter = new Vector2(circle.Width / 2f, circle.Height / 2f);
             imageCenter2 = new Vector2(line.Width, line.Height);
             imageCenter3 = new Vector2(line.Width, line.Height + radius/2);
@@ -50,8 +51,6 @@ namespace GeneratedRPGGame
             critFans = new List<Fan>();
 
             allFans.Clear();
-
-            Color[] list = new Color[3] { Color.Yellow, Color.Tomato, Color.Thistle };
 
             for (int i = 0; i < hits; i++)
             {
@@ -63,9 +62,9 @@ namespace GeneratedRPGGame
         public void LoadContent(ContentManager content)
         {
             coordinates = content.Load<SpriteFont>("Courier New");
-            hit = content.Load<SoundEffect>("anvil_hit");
-            miss = content.Load<SoundEffect>("flyby-Conor");
-            crit = content.Load<SoundEffect>("glass_ping");
+            hit = content.Load<SoundEffect>("Sound Effects/anvil_hit");
+            miss = content.Load<SoundEffect>("Sound Effects/flyby-Conor");
+            crit = content.Load<SoundEffect>("Sound Effects/glass_ping");
         }
 
         private float RotationAngle;
@@ -92,7 +91,7 @@ namespace GeneratedRPGGame
                 {
                     double error = getError(angle, degToRad(hitCrit[current]));
                     double errorOk = Math.Abs(1 - hitOk[current] / 90);
-                    if (error<= 0.05)
+                    if (error<= 0.03)
                     {
                         indicator = "Critical Hit! With " + hitCrit[current] + " at " + angle*180/Math.PI;
                         circleCrit();
@@ -106,15 +105,17 @@ namespace GeneratedRPGGame
                     {
                         indicator = "Miss! With " + hitCrit[current] + " at " + angle * 180 / Math.PI;
                         circleMiss();
+                        //isEnd = true;
                     }
 
                     current++;
                     pressed = false;
                 }
 
-                if (current>=3)
+                if (current>=hits)
                 {
                     current = 0;
+                    isEnd = true;
                 }
   
             }
@@ -124,6 +125,7 @@ namespace GeneratedRPGGame
                 pressed = true;
             }
         }
+
         private double getError(double actual, double expected){
             return Math.Abs(actual - expected) / expected;
         }

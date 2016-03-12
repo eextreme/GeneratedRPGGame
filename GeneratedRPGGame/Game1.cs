@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using GeneratedRPGGame.Core_Mechanics;
+
 namespace GeneratedRPGGame
 {
     /// <summary>
@@ -18,13 +20,20 @@ namespace GeneratedRPGGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D circle, line;
-        KeyboardState state;
         SpriteFont coordinates;
-        String indicator;
-        float[] hitArray, hitCrit, hitOk, hitAng;
-        List<Fan> allFans, critFans;
-        Vector2 screenCenter, imageCenter, imageCenter2, imageCenter3;
+        float[] hitCrit, hitOk;
+        int hits = 0;       
+        Texture2D monster, target;
+        
+        
+        Player newPlayer;
+        Weapon newWeapon;
+        Monster newMonster;
+        
+        
+        String indicator="";
+        bool keyDownState = false, showAtkCircle = false, gameOver = false;
+   
 
         public Game1()
         {
@@ -48,16 +57,14 @@ namespace GeneratedRPGGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            state = Keyboard.GetState();
-            circle = drawCircle(300);
+            /*circle = drawCircle(300);
             line = createLine(150, Color.Red);
             current = 0;
 
-            coordinates = Content.Load<SpriteFont>("Courier New");
+            
             indicator = "Press and hold space to stop";
 
-            hitCrit = new float[3] { 90, 240, 360 };
-            hitOk = new float[3] { 60, 60, 60 };
+
             hitAng = new float[3] { 0, 0, 0 };
 
             createAttackCircle(3, hitCrit, hitOk);
@@ -65,10 +72,25 @@ namespace GeneratedRPGGame
             screenCenter = new Vector2(400, 400);
             imageCenter = new Vector2(circle.Width / 2f, circle.Height / 2f);
             imageCenter2 = new Vector2(line.Width, line.Height);
-            imageCenter3 = new Vector2(line.Width, line.Height + 150);
+            imageCenter3 = new Vector2(line.Width, line.Height + 150);*/
+            
+            hitCrit = new float[5] { 140, 200, 260, 300, 340 };
+            hitOk = new float[5] { 60, 70, 70, 80, 85 };
 
+            newPlayer = new Player(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4);
+            newWeapon = new Weapon(Content.Load<Texture2D>("Sprite Sheets/spear"), hitCrit, hitOk, 200, graphics.GraphicsDevice, 0.3f, 10, 30);
+            newWeapon.setOffSet(140, 128);
 
+            newPlayer.equipWeapon(newWeapon);
+            newPlayer.setSpawnPoint(200, 200);
 
+            newWeapon.atkCircle.LoadContent(Content);
+
+            newMonster = new Monster(Content.Load<Texture2D>("simple circle"), 200, 10, 12, 4, 1f, 0.6f, 0, 1, 1);
+            newMonster.spawnMonster(700, 700);
+
+            //target = Content.Load<Texture2D>("simple circle");
+            
             base.Initialize();
         }
 
@@ -79,12 +101,20 @@ namespace GeneratedRPGGame
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);            
 
+            //newCircle.LoadContent(Content);
+            
+            coordinates = Content.Load<SpriteFont>("Courier New");
+            /*hit = Content.Load<SoundEffect>("glass_ping");
+            miss = Content.Load<SoundEffect>("flyby-Conor");*/
 
             // TODO: use this.Content to load your game content here
         }
 
+        public KeyboardState getKey() { return Keyboard.GetState();}
+        public MouseState getMouse() { return Mouse.GetState(); }
+                
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// all content.
@@ -99,83 +129,74 @@ namespace GeneratedRPGGame
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        private float RotationAngle;
-        private bool pressed=false;
+
+        int targModX = 0, targModY = 0;
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            float elapsed = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             
-            RotationAngle += elapsed / 1000;
-
-            //indicator = "Mouse is in " + getMouseState();
-            if (getMouseState().LeftButton==ButtonState.Pressed)
+            if (checkCollision(new Rectangle(newPlayer.aPosX,newPlayer.aPoxY,20,5), newMonster.getHitBox()))
             {
-                if (current < 3 && pressed)
+                if (getKey().IsKeyDown(Keys.Space) && !keyDownState)
                 {
-                    hitAng[current] = RotationAngle;
-                    current++;
-                    pressed = false;
+                    hits++;
+                    indicator = "You hit the ball: " + hits + " time";
+
+                    if (newPlayer.getPlayerDir() == "Up")
+                        targModY = newWeapon.hitForce;
+
+                    if (newPlayer.getPlayerDir() == "Down")
+                        targModY = -newWeapon.hitForce;
+
+                    if (newPlayer.getPlayerDir() == "Right")
+                        targModX = -newWeapon.hitForce;
+
+                    if (newPlayer.getPlayerDir() == "Left")
+                        targModX = newWeapon.hitForce;
+
+                    newMonster.knockBack(targModX, targModY);
+                    
+                    keyDownState = true;
+                    
                 }
+
+                if (!getKey().IsKeyDown(Keys.Space))
+                    keyDownState = false;
             }
 
-            if (getMouseState().LeftButton==ButtonState.Released)
+            if (newWeapon.comboReached(hits) && getKey().IsKeyDown(Keys.LeftShift))
             {
-                pressed = true;
-            }
+               showAtkCircle = true;
+               newWeapon.atkCircle.isEnd = false;
+               hits = 0;
+             }
 
-            if (getMouseState().RightButton == ButtonState.Pressed)
+             if (showAtkCircle == true)
+             {
+                newWeapon.atkCircle.Update(gameTime);
+                    if (newWeapon.atkCircle.isEnd)
+                        showAtkCircle = false;
+             }
+
+            if (showAtkCircle == false && gameOver==false)
             {
-                calculateHitInfo(hitAng, hitCrit);
-                current = 0;
+                //normal update functions
+                newMonster.MoveWithBasicAI(newPlayer.posX, newPlayer.aPoxY);
+                                
+                newPlayer.move();
+
+                if (checkCollision(new Rectangle(newPlayer.posX, newPlayer.posY, 10, 20), newMonster.getHitBox()))
+                    gameOver = true;
+
             }
 
-                                    
-            float circle = MathHelper.Pi * 2;
-            RotationAngle = RotationAngle % circle;
-
-           
-
+            //newCircle.Update(gameTime);
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-        }
-
-        private int current;
-        private void calculateHitInfo(float[] hit, float[] loc)
-        {
-            indicator = String.Format("\nFirst hit at {0} with error of {1}\nSecond hit at {2} with error of {3}\nThird hit at {4} with error of {5}",
-                                        hit[0] * 180 / Math.PI, getError(hit[0], degToRad(loc[0])),
-                                        hit[1] * 180 / Math.PI, getError(hit[1], degToRad(loc[1])),
-                                        hit[2] * 180 / Math.PI, getError(hit[2], degToRad(loc[2]))); 
-        }
-
-        public void getAngle (float angle)
-        {
-
-        }
-
-        public double getError(double actual, double expected)
-        {
-            return Math.Abs(actual-expected)/expected;
-        }
-        
-        public KeyboardState getKeyboardState()
-        {
-            return Keyboard.GetState();
-        }
-
-        public MouseState getMouseState()
-        {
-            return Mouse.GetState();
-        }
-
-        public double degToRad (double deg)
-        {
-            return deg * Math.PI / 180;
         }
 
         /// <summary>
@@ -186,123 +207,34 @@ namespace GeneratedRPGGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            graphics.GraphicsDevice.Clear(Color.White);
             // TODO: Add your drawing code here
 
-           
-            graphics.GraphicsDevice.Clear(Color.White);
-
             spriteBatch.Begin();
-            spriteBatch.Draw(circle, screenCenter, null, Color.White, 0f, imageCenter, 1f, SpriteEffects.None, 0f);
+            //map.Draw(spriteBatch);
+            if (showAtkCircle == true)
+            {
+                newWeapon.atkCircle.Draw(spriteBatch);
+            }
+            
+            spriteBatch.DrawString(coordinates, indicator, new Vector2(0,700), Color.Black);
+            newMonster.Draw(spriteBatch);
+            newPlayer.Draw(spriteBatch);
 
-            foreach (Fan f in allFans)
-                spriteBatch.Draw(f.texture, screenCenter, null, Color.White, (float) degToRad(f.angle+f.angleOff), imageCenter3, 1f, SpriteEffects.None, 0f);
-                
-            spriteBatch.Draw(line, screenCenter, null, Color.Green, RotationAngle, imageCenter2, 1f, SpriteEffects.None, 0f);
 
-            spriteBatch.DrawString(coordinates, indicator, new Vector2(0, 0), Color.Black);
+            if (gameOver == true)
+                spriteBatch.DrawString(coordinates, "Game Over, you scored: " + hits + " points", new Vector2(400, 700), Color.Black);
+            
             spriteBatch.End();
 
             base.Draw(gameTime);
         }
 
-        private void createAttackCircle(int hits, float[] critHit, float[] okHit)
+        public Boolean checkCollision(Rectangle a, Rectangle b)
         {
-            allFans = new List<Fan>();
-         
-            for (int i=0; i < hits; i++)
-            {
-                allFans.Add(new Fan(drawFan(300, okHit[i], Color.LightBlue), critHit[i], okHit[i]));
-            }          
+            return a.Intersects(b);
         }
 
-        private Texture2D drawCircle(int radius)
-        {
-            Texture2D texture = new Texture2D(GraphicsDevice, radius, radius);
-            Color[] colorData = new Color[radius * radius];
 
-            float diam = radius / 2f;
-            float diamsq = diam * diam;
-
-            for (int x = 1; x < radius; x++)
-            {
-                for (int y = 1; y < radius; y++)
-                {
-                    int index = x * radius + y;
-                    Vector2 pos = new Vector2(x - diam, y - diam);
-                    if (pos.LengthSquared() <= diamsq)
-                    {
-                        colorData[index] = Color.Green;
-                    }
-                    else
-                    {
-                        colorData[index] = Color.Transparent;
-                    }
-                }
-            }
-
-            texture.SetData(colorData);
-            return texture;
-        }
-
-        private Texture2D createLine(int radius, Color colors)
-        {
-            Texture2D texture = new Texture2D(GraphicsDevice,radius, 1);
-            Color[] fill = new Color[1 * radius];
-
-            for (int i = 0; i < fill.Length; i++ )
-            {
-                fill[i] = colors;
-            }
-
-            texture.SetData(fill);
-            return texture;
-        }
-
-        private Texture2D drawFan(int radius, double size, Color clrs)
-        {
-            Texture2D texture = new Texture2D(GraphicsDevice, radius, radius);
-            Color[] colorData = new Color[radius * radius];
-
-            float diam = radius / 2f;
-            float diamsq = diam * diam;
-            double angle = 0;
-
-            for (int x = 1; x < radius / 2; x++)
-            {
-                for (int y = 1; y < radius; y++)
-                {
-                    int index = x * radius + y;
-                    Vector2 pos = new Vector2(x - diam, y - diam);
-                    angle = Math.Atan(pos.X / pos.Y);
-                    if (pos.LengthSquared() <= diamsq && angle >= degToRad(size))
-                    {
-                        colorData[index] = clrs;
-                    }
-                    else
-                    {
-                        colorData[index] = Color.Transparent;
-                    }
-                }
-            }
-
-            texture.SetData(colorData);
-            return texture;
-        }
-
-        public class Fan
-        {
-            public Texture2D texture { get; set; }
-            public double angle { get; set; }
-            public double angleOff { get; set; }
-
-            public Fan(Texture2D image, double ang, double ok)
-            {
-                texture = image;
-                angle = ang;
-                angleOff = - 0.5 * ok + 45;
-            }
-        }
     }
 }

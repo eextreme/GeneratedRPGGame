@@ -29,6 +29,8 @@ namespace GeneratedRPGGame
         Player newPlayer;
         Weapon newWeapon;
         Monster newMonster;
+        TileSets basicTile;
+        GenerateMap map;
         
         
         String indicator="";
@@ -89,6 +91,8 @@ namespace GeneratedRPGGame
             newMonster = new Monster(Content.Load<Texture2D>("simple circle"), 200, 10, 12, 4, 1f, 0.6f, 0, 1, 1);
             newMonster.spawnMonster(700, 700);
 
+            basicTile = new TileSets(Content.Load<Texture2D>("Tile Sets/part1_tileset"), 4, 1, graphics.GraphicsDevice);
+            map = new GenerateMap(800, 800);
             //target = Content.Load<Texture2D>("simple circle");
             
             base.Initialize();
@@ -106,10 +110,15 @@ namespace GeneratedRPGGame
             //newCircle.LoadContent(Content);
             
             coordinates = Content.Load<SpriteFont>("Courier New");
+
+            
             /*hit = Content.Load<SoundEffect>("glass_ping");
             miss = Content.Load<SoundEffect>("flyby-Conor");*/
 
             // TODO: use this.Content to load your game content here
+
+
+
         }
 
         public KeyboardState getKey() { return Keyboard.GetState();}
@@ -184,8 +193,7 @@ namespace GeneratedRPGGame
             if (showAtkCircle == false && gameOver==false)
             {
                 //normal update functions
-                newMonster.MoveWithBasicAI(newPlayer.posX, newPlayer.aPoxY);
-                                
+                newMonster.MoveWithBasicAI(newPlayer.posX, newPlayer.aPoxY);              
                 newPlayer.move();
 
                 if (checkCollision(new Rectangle(newPlayer.posX, newPlayer.posY, 10, 20), newMonster.getHitBox()))
@@ -217,9 +225,13 @@ namespace GeneratedRPGGame
                 newWeapon.atkCircle.Draw(spriteBatch);
             }
             
+            map.DrawSeperate(spriteBatch, basicTile);
+                       
             spriteBatch.DrawString(coordinates, indicator, new Vector2(0,700), Color.Black);
             newMonster.Draw(spriteBatch);
             newPlayer.Draw(spriteBatch);
+            
+            
 
 
             if (gameOver == true)

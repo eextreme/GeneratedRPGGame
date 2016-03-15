@@ -10,16 +10,74 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-namespace GeneratedRPGGame
+namespace GeneratedRPGGame.Core_Mechanics
 {
     class GenerateMap
     {
-        TileSets tileSet;
-        GraphicsDevice device;
-
-        public GenerateMap(int x, int y, Texture2D tiles)
+        Color[] mapColor, tileColor;
+        Texture2D generatedMap;
+        int[,] mapProperties;
+        int xMax, yMax;
+        
+        public GenerateMap(int x, int y, TileSets set, GraphicsDevice device)
         {
-            tileSet = new TileSets(tiles, 10, 10, device);
+            mapColor = new Color [x*y*set.fWidth*set.fHeight];
+            Random rnd = new Random();
+            int gen;
+
+            for (int i=0;i<mapColor.Length;i++)
+            {
+                gen = rnd.Next(0,set.listSize);
+                tileColor = set.getTextureColors(gen);
+                for (int j = 0; j < tileColor.Length; j++)
+                {
+                    mapColor[i] = Color.Lerp(mapColor[i], tileColor[j], 1f);
+                }
+            }
+
+            generatedMap = new Texture2D(device, x * set.fWidth, y * set.fHeight);
+
+            generatedMap.SetData(mapColor);
+        }
+
+        public GenerateMap (int xMaxed, int yMaxed)
+        {
+            xMax = xMaxed; yMax = yMaxed;
+            mapProperties = new int[xMax, yMax];
+            for (int i=0; i < xMax; i++)
+            {
+                Random rnd = new Random();
+                for (int j=0; j<yMax;j++)
+                {
+                    mapProperties[i, j] = rnd.Next(0, 0);
+                }
+            }
+        }
+
+        public void smartMapGenerator()
+        {
+            //better map generator
+        }
+
+        public void Draw(SpriteBatch sprite)
+        {
+            sprite.Draw(generatedMap, new Rectangle(0, 0, 800, 800), Color.White);
+        }
+
+        public void DrawSeperate(SpriteBatch sprite, TileSets set)
+        {
+            Random rnd = new Random();
+            int index = rnd.Next(0, set.listSize);
+
+            for (int i=0; i<xMax;i+=set.fWidth)
+            {
+                for (int j=0; j<yMax;j+=set.fHeight)
+                {
+                    Rectangle loc = new Rectangle(i, j, set.fWidth, set.fHeight);
+                    sprite.Draw(set.getTexture(mapProperties[i,j]),loc, Color.White);
+                }
+            }
+
         }
 
         /* Requires tile classes
@@ -38,45 +96,5 @@ namespace GeneratedRPGGame
          * - Surround outer screen with a wall
          * - 
          * */
-
-        public void generatedMap(int x, int y)
-        {
-
-        }
-
-        public void Draw(SpriteBatch batch)
-        {
-
-        }
-
-        private class TileSets
-        {
-            List <Texture2D> tiles;
-            
-            public TileSets(Texture2D tileSource, int numXFrames, int numYFrames, GraphicsDevice device)
-            {
-                int fWidth = tileSource.Width / numXFrames;
-                int fHeight = tileSource.Width / numYFrames;
-                Rectangle source;
-                Texture2D sourceTexture;
-                Color[] data;
-
-                for (int i = 0; i * fWidth < tileSource.Width; i++)
-                {
-                    for( int j =0; j*fHeight <tileSource.Height;j++)
-                    {
-                        source = new Rectangle(i*fWidth, j*fHeight, tileSource.Width-i*fWidth, tileSource.Height-j*fHeight);
-                        sourceTexture = new Texture2D(device, source.Width,source.Height);
-                        data = new Color[source.Width * source.Height];
-                        
-                        tileSource.GetData(0, source, data, 0, data.Length);
-                        
-                        sourceTexture.SetData(data);
-                        
-                        tiles.Add(sourceTexture);
-                    }
-                }
-            }
-        }
     }
 }

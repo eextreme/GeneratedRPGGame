@@ -14,13 +14,12 @@ namespace GeneratedRPGGame
 {
     class GenerateMap
     {
-        tileSet tiles;
-        int[][] mapTile;
+        TileSets tileSet;
+        GraphicsDevice device;
 
-        public GenerateMap(int x, int y, ContentManager content)
+        public GenerateMap(int x, int y, Texture2D tiles)
         {
-            tiles = new tileSet("Practice", content.Load<Texture2D>("Tile Sets/part1_tileset"));
-            Texture2D[,] test = new Texture2D[x, y];
+            tileSet = new TileSets(tiles, 10, 10, device);
         }
 
         /* Requires tile classes
@@ -47,22 +46,36 @@ namespace GeneratedRPGGame
 
         public void Draw(SpriteBatch batch)
         {
-            Random any = new Random();
-            
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++ )
-                    batch.Draw(tiles.tileS, new Rectangle(32*i, 32*j, 32, 32), new Rectangle(mapTile[i][j]*32, 0, 32, 32), Color.White);
-            }
+
         }
 
-        public class tileSet
+        private class TileSets
         {
-            public Texture2D tileS;
+            List <Texture2D> tiles;
             
-            public tileSet(String name, Texture2D tileSet)
+            public TileSets(Texture2D tileSource, int numXFrames, int numYFrames, GraphicsDevice device)
             {
-                tileS = tileSet;
+                int fWidth = tileSource.Width / numXFrames;
+                int fHeight = tileSource.Width / numYFrames;
+                Rectangle source;
+                Texture2D sourceTexture;
+                Color[] data;
+
+                for (int i = 0; i * fWidth < tileSource.Width; i++)
+                {
+                    for( int j =0; j*fHeight <tileSource.Height;j++)
+                    {
+                        source = new Rectangle(i*fWidth, j*fHeight, tileSource.Width-i*fWidth, tileSource.Height-j*fHeight);
+                        sourceTexture = new Texture2D(device, source.Width,source.Height);
+                        data = new Color[source.Width * source.Height];
+                        
+                        tileSource.GetData(0, source, data, 0, data.Length);
+                        
+                        sourceTexture.SetData(data);
+                        
+                        tiles.Add(sourceTexture);
+                    }
+                }
             }
         }
     }

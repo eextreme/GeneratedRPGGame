@@ -73,6 +73,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core Mechanics\CombatInterface.cs" />
     <Compile Include="Core Mechanics\CreateAttackCircle.cs" />
     <Compile Include="Core Mechanics\GenerateMap.cs" />
     <Compile Include="Core Mechanics\Monster.cs" />

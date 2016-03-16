@@ -22,19 +22,17 @@ namespace GeneratedRPGGame
         SpriteBatch spriteBatch;
         SpriteFont coordinates;
         float[] hitCrit, hitOk;
-        int hits = 0;       
-        Texture2D monster, target;
-        
+        int hits = 0, killcount;       
         
         Player newPlayer;
         Weapon newWeapon;
         Monster newMonster;
-        TileSets basicTile;
+        TileSets basicTile, advancedTile, monsterTiles;
         GenerateMap map;
-        
+        CombatInterface ui;
         
         String indicator="";
-        bool keyDownState = false, showAtkCircle = false, gameOver = false;
+        bool keyDownState = false, showAtkCircle = false;
    
 
         public Game1()
@@ -79,21 +77,27 @@ namespace GeneratedRPGGame
             hitCrit = new float[5] { 140, 200, 260, 300, 340 };
             hitOk = new float[5] { 60, 70, 70, 80, 85 };
 
-            newPlayer = new Player(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4);
-            newWeapon = new Weapon(Content.Load<Texture2D>("Sprite Sheets/spear"), hitCrit, hitOk, 200, graphics.GraphicsDevice, 0.3f, 10, 30);
-            newWeapon.setOffSet(140, 128);
+            newPlayer = new Player(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4, 100, 100);
+            newWeapon = new Weapon(hitCrit, hitOk, 200, graphics.GraphicsDevice, 100, 10, 10, 10, 10);
 
             newPlayer.equipWeapon(newWeapon);
             newPlayer.setSpawnPoint(200, 200);
 
             newWeapon.atkCircle.LoadContent(Content);
+                        
+            basicTile = new TileSets(Content.Load<Texture2D>("Tile Sets/part1_tileset"), 4, 1, graphics.GraphicsDevice);
+            advancedTile = new TileSets(Content.Load<Texture2D>("Tile Sets/hyptosis-art-batch-1"), 30, 30, graphics.GraphicsDevice);
+            monsterTiles = new TileSets(Content.Load<Texture2D>("Sprite Sheets/testMonsters"), 10, 10, graphics.GraphicsDevice);
 
-            newMonster = new Monster(Content.Load<Texture2D>("simple circle"), 200, 10, 12, 4, 1f, 0.6f, 0, 1, 1);
+            newMonster = new Monster(monsterTiles.getTexture(0), 200, 10, 0, 5, 1f, 0.6f, 0, 1, 1);
             newMonster.spawnMonster(700, 700);
 
-            basicTile = new TileSets(Content.Load<Texture2D>("Tile Sets/part1_tileset"), 4, 1, graphics.GraphicsDevice);
-            map = new GenerateMap(800, 800);
-            //target = Content.Load<Texture2D>("simple circle");
+            ui = new CombatInterface(newPlayer.health, newPlayer.mana, newMonster.health, 50, "Monster", "Player", 400);
+            ui.update(newMonster.health, newPlayer.health, graphics.GraphicsDevice);
+
+            map = new GenerateMap(800, 800, advancedTile);
+
+                       //target = Content.Load<Texture2D>("simple circle");
             
             base.Initialize();
         }
@@ -139,42 +143,11 @@ namespace GeneratedRPGGame
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
 
-        int targModX = 0, targModY = 0;
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-
-            
-            if (checkCollision(new Rectangle(newPlayer.aPosX,newPlayer.aPoxY,20,5), newMonster.getHitBox()))
-            {
-                if (getKey().IsKeyDown(Keys.Space) && !keyDownState)
-                {
-                    hits++;
-                    indicator = "You hit the ball: " + hits + " time";
-
-                    if (newPlayer.getPlayerDir() == "Up")
-                        targModY = newWeapon.hitForce;
-
-                    if (newPlayer.getPlayerDir() == "Down")
-                        targModY = -newWeapon.hitForce;
-
-                    if (newPlayer.getPlayerDir() == "Right")
-                        targModX = -newWeapon.hitForce;
-
-                    if (newPlayer.getPlayerDir() == "Left")
-                        targModX = newWeapon.hitForce;
-
-                    newMonster.knockBack(targModX, targModY);
-                    
-                    keyDownState = true;
-                    
-                }
-
-                if (!getKey().IsKeyDown(Keys.Space))
-                    keyDownState = false;
-            }
 
             if (newWeapon.comboReached(hits) && getKey().IsKeyDown(Keys.LeftShift))
             {
@@ -190,14 +163,36 @@ namespace GeneratedRPGGame
                         showAtkCircle = false;
              }
 
-            if (showAtkCircle == false && gameOver==false)
+            if (showAtkCircle == false && newPlayer.isAlive())
             {
                 //normal update functions
-                newMonster.MoveWithBasicAI(newPlayer.posX, newPlayer.aPoxY);              
+                newMonster.MoveWithBasicAI(newPlayer.posX, newPlayer.posY);              
                 newPlayer.move();
 
+                if (!getKey().IsKeyUp(Keys.Space))
+                {
+                    Rectangle hitBox = newWeapon.stabWeapon(newPlayer.posX, newPlayer.posY, newPlayer.getPlayerDir(), newPlayer);
+                    keyDownState = true;
+
+                    if (checkCollision(hitBox, newMonster.getHitBox()))
+                    {
+                        newMonster.takeDamage(10, newPlayer.getPlayerDir(), newWeapon.hitForce);
+                    }
+
+                }
+                
+                ui.update(newMonster.health, newPlayer.health, graphics.GraphicsDevice); 
+                
                 if (checkCollision(new Rectangle(newPlayer.posX, newPlayer.posY, 10, 20), newMonster.getHitBox()))
-                    gameOver = true;
+                    newPlayer.takeDamage(newMonster.attack);
+
+                if (!newMonster.alive())
+                {
+                    killcount++;
+                    Random rnd = new Random();
+                    newMonster = new Monster(monsterTiles.getTexture(rnd.Next(0, monsterTiles.listSize)), 200, 10, 0, 5, 80, 20, 0, 1, 1);
+                    newMonster.spawnMonster(rnd.Next(0, 800), rnd.Next(0, 800));
+                }
 
             }
 
@@ -220,22 +215,22 @@ namespace GeneratedRPGGame
 
             spriteBatch.Begin();
             //map.Draw(spriteBatch);
-            if (showAtkCircle == true)
-            {
-                newWeapon.atkCircle.Draw(spriteBatch);
-            }
-            
-            map.DrawSeperate(spriteBatch, basicTile);
+            if (showAtkCircle == true){ newWeapon.atkCircle.Draw(spriteBatch);}
+            if (newMonster.alive()) { newMonster.Draw(spriteBatch);}
+
+            ui.Draw(spriteBatch);
                        
-            spriteBatch.DrawString(coordinates, indicator, new Vector2(0,700), Color.Black);
-            newMonster.Draw(spriteBatch);
+            //map.DrawSeperate(spriteBatch, advancedTile);
             newPlayer.Draw(spriteBatch);
-            
-            
 
+            if (keyDownState)
+            {
+                newWeapon.Draw(spriteBatch, newPlayer);
+                keyDownState = false;
+            }
 
-            if (gameOver == true)
-                spriteBatch.DrawString(coordinates, "Game Over, you scored: " + hits + " points", new Vector2(400, 700), Color.Black);
+            if (!newPlayer.isAlive())
+                spriteBatch.DrawString(coordinates, "Game Over, you killed: " + killcount + " monsters" , new Vector2(400, 700), Color.Black);
             
             spriteBatch.End();
 

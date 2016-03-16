@@ -40,7 +40,7 @@ namespace GeneratedRPGGame.Core_Mechanics
             generatedMap.SetData(mapColor);
         }
 
-        public GenerateMap (int xMaxed, int yMaxed)
+        public GenerateMap (int xMaxed, int yMaxed, TileSets set)
         {
             xMax = xMaxed; yMax = yMaxed;
             mapProperties = new int[xMax, yMax];
@@ -49,7 +49,7 @@ namespace GeneratedRPGGame.Core_Mechanics
                 Random rnd = new Random();
                 for (int j=0; j<yMax;j++)
                 {
-                    mapProperties[i, j] = rnd.Next(0, 0);
+                    mapProperties[i, j] = rnd.Next(0, set.listSize);
                 }
             }
         }

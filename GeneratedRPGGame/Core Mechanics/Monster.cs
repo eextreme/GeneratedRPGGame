@@ -16,7 +16,8 @@ namespace GeneratedRPGGame.Core_Mechanics
     {
         Rectangle hitBox;
         Texture2D monsterSpite;
-        int health, defense, attack, movSpeed, knockResist;
+        public int health, defense, attack;
+        int movSpeed, knockResist;
         float hitRate, critRate;
         int posX, posY, xAniFrame = 0 , yAniFrame = 0;
         int xFrame, yFrame, numOfFrames;
@@ -49,7 +50,8 @@ namespace GeneratedRPGGame.Core_Mechanics
                 if (xAniFrame < numOfFrames) { yAniFrame = 0; xAniFrame++; }
             }
 
-            if (playerYPos > posY) { posY += movSpeed; 
+            if (playerYPos > posY) { 
+                posY += movSpeed; 
                 if (xAniFrame < numOfFrames) { yAniFrame = 0; xAniFrame++; }
             }
 
@@ -80,10 +82,26 @@ namespace GeneratedRPGGame.Core_Mechanics
             return hitBox;
         }
 
-        public void knockBack (int x, int y)
+        private void knockBack (int x, int y)
         {
-            posX = posX - x;
-            posY = posY - x;
+            posX += x;
+            posY += y;
+        }
+
+        public Boolean alive() {return health > 0;}
+        public void takeDamage(int dmg, String dir, int force) 
+        { 
+            int effForce = force - knockResist;
+
+            if (effForce < 0) { effForce = 1;}
+
+            if (dir == "Up"){ knockBack(0, -effForce); }
+            if (dir == "Down") { knockBack(0, effForce); }
+
+            if (dir == "Right") { knockBack(effForce, 0);}
+            if (dir == "Left") { knockBack(-effForce, 0); }
+            
+            health -= dmg; 
         }
 
     }

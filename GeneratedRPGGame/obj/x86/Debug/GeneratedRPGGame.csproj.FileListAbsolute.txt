@@ -15,3 +15,6 @@ C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\Genera
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.exe
 C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\obj\x86\Debug\GeneratedRPGGame.pdb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Tile Sets\hyptosis-art-batch-1.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\testMonsters.xnb
+C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\weapons-and-equipment.xnb

@@ -100,6 +100,33 @@
       <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\simpleMonster.xnb</Output>
       <Time>2016-03-14T09:35:44.8887189-06:00</Time>
     </Item>
+    <Item>
+      <Source>Tile Sets\hyptosis-art-batch-1.png</Source>
+      <Name>Tile Sets\hyptosis-art-batch-1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Tile Sets\hyptosis-art-batch-1.xnb</Output>
+      <Time>2016-03-15T15:05:32.1296889-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Sprite Sheets\testMonsters.png</Source>
+      <Name>Sprite Sheets\testMonsters</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\testMonsters.xnb</Output>
+      <Time>2016-03-16T08:57:19.7102902-06:00</Time>
+    </Item>
+    <Item>
+      <Source>Sprite Sheets\weapons-and-equipment.png</Source>
+      <Name>Sprite Sheets\weapons-and-equipment</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\eextreme\Desktop\GeneratedRPGGame\GeneratedRPGGame\bin\x86\Debug\Content\Sprite Sheets\weapons-and-equipment.xnb</Output>
+      <Time>2016-03-16T12:55:09.5162478-06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <ContentProjectGUID>{EC65CE89-9D23-4B71-91FF-B90123698671}</ContentProjectGUID>

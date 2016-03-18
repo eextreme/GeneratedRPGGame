@@ -78,7 +78,7 @@ namespace GeneratedRPGGame
             hitOk = new float[5] { 60, 70, 70, 80, 85 };
 
             newPlayer = new Player(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4, 100, 100);
-            newWeapon = new Weapon(hitCrit, hitOk, 200, graphics.GraphicsDevice, 100, 10, 10, 10, 10);
+            newWeapon = new Weapon(hitCrit, hitOk, 200, graphics.GraphicsDevice, 100f, 10, 50, 10);
 
             newPlayer.equipWeapon(newWeapon);
             newPlayer.setSpawnPoint(200, 200);
@@ -89,8 +89,8 @@ namespace GeneratedRPGGame
             advancedTile = new TileSets(Content.Load<Texture2D>("Tile Sets/hyptosis-art-batch-1"), 30, 30, graphics.GraphicsDevice);
             monsterTiles = new TileSets(Content.Load<Texture2D>("Sprite Sheets/testMonsters"), 10, 10, graphics.GraphicsDevice);
 
-            newMonster = new Monster(monsterTiles.getTexture(0), 200, 10, 0, 5, 1f, 0.6f, 0, 1, 1);
-            newMonster.spawnMonster(700, 700);
+            newMonster = new Monster(monsterTiles.getTexture(0), 200, 10, 0, 0, 1f, 0.6f, 0, 50, 1, 1);
+            newMonster.spawnMonster(400, 400);
 
             ui = new CombatInterface(newPlayer.health, newPlayer.mana, newMonster.health, 50, "Monster", "Player", 400);
             ui.update(newMonster.health, newPlayer.health, graphics.GraphicsDevice);
@@ -171,12 +171,14 @@ namespace GeneratedRPGGame
 
                 if (!getKey().IsKeyUp(Keys.Space))
                 {
-                    Rectangle hitBox = newWeapon.stabWeapon(newPlayer.posX, newPlayer.posY, newPlayer.getPlayerDir(), newPlayer);
+                    newWeapon.stabWeapon(newPlayer.getPlayerDir());
                     keyDownState = true;
 
-                    if (checkCollision(hitBox, newMonster.getHitBox()))
+                    if (checkCircleCollision(newMonster.monsterCenter(), 120, newPlayer.playerCenter(), 60))
                     {
-                        newMonster.takeDamage(10, newPlayer.getPlayerDir(), newWeapon.hitForce);
+                        getOffSet(newPlayer.playerCenter(), newMonster.monsterCenter(), new Vector2(collPointX, collPointY), newWeapon.hitForce);
+                        newMonster.takeDamage(10, objMod[0], objMod[1]);
+                        hits++;
                     }
 
                 }
@@ -184,15 +186,21 @@ namespace GeneratedRPGGame
                 ui.update(newMonster.health, newPlayer.health, graphics.GraphicsDevice); 
                 
                 if (checkCollision(new Rectangle(newPlayer.posX, newPlayer.posY, 10, 20), newMonster.getHitBox()))
-                    newPlayer.takeDamage(newMonster.attack);
+                {
+                    getOffSet(newMonster.monsterCenter(), newPlayer.playerCenter(), new Vector2(collPointX, collPointY), newMonster.hitForce);
+                    newPlayer.takeDamage(newMonster.attack, objMod[0], objMod[1]);
+                }
+
 
                 if (!newMonster.alive())
                 {
                     killcount++;
                     Random rnd = new Random();
-                    newMonster = new Monster(monsterTiles.getTexture(rnd.Next(0, monsterTiles.listSize)), 200, 10, 0, 5, 80, 20, 0, 1, 1);
+                    newMonster = new Monster(monsterTiles.getTexture(rnd.Next(0, monsterTiles.listSize)), 200, 10, 0, 5, 80, 20,0,30, 1, 1);
                     newMonster.spawnMonster(rnd.Next(0, 800), rnd.Next(0, 800));
                 }
+
+                 
 
             }
 
@@ -219,6 +227,7 @@ namespace GeneratedRPGGame
             if (newMonster.alive()) { newMonster.Draw(spriteBatch);}
 
             ui.Draw(spriteBatch);
+            spriteBatch.DrawString(coordinates, "Hit!!!!!!!!!!!!", new Vector2(collPointX, collPointY), Color.Black);
                        
             //map.DrawSeperate(spriteBatch, advancedTile);
             newPlayer.Draw(spriteBatch);
@@ -228,6 +237,7 @@ namespace GeneratedRPGGame
                 newWeapon.Draw(spriteBatch, newPlayer);
                 keyDownState = false;
             }
+
 
             if (!newPlayer.isAlive())
                 spriteBatch.DrawString(coordinates, "Game Over, you killed: " + killcount + " monsters" , new Vector2(400, 700), Color.Black);
@@ -241,6 +251,40 @@ namespace GeneratedRPGGame
         {
             return a.Intersects(b);
         }
+
+        int collPointX, collPointY;
+        
+        private Boolean checkCircleCollision(Vector2 a, float radiusA, Vector2 b, float radiusB)
+        {
+            float dist = Vector2.Distance(a, b);
+            float dist2 = radiusA + radiusB;
+
+            float cpX = ((a.X * radiusB) + (b.X * radiusA)) / (radiusA + radiusB);
+            float cpY = ((a.Y * radiusB) + (b.Y * radiusA)) / (radiusA + radiusB);
+
+            collPointX = (int) cpX; collPointY = (int) cpY;
+
+            return (dist2 > dist);
+        }
+
+        int [] objMod;
+        private void getOffSet(Vector2 centObj1, Vector2 centObj2, Vector2 collPoint, int force)
+        {
+            double xCent1 = centObj1.X - collPoint.X;
+            double yCent1 = centObj1.Y - collPoint.Y;
+
+            double angleObj1 = Math.Atan(yCent1/xCent1);
+                
+            double xCent2 = centObj2.X - collPoint.X;
+            double yCent2 = centObj2.Y - collPoint.Y;
+
+            double angleObj2 = Math.Atan(yCent2 / xCent2);
+
+            objMod = new int[2] { (int)(force * Math.Sin(angleObj1)), (int)(force * Math.Cos(angleObj1)) };
+            
+        }
+
+        
 
 
     }

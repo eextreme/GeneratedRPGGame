@@ -15,22 +15,20 @@ namespace GeneratedRPGGame.Core_Mechanics
     class Weapon
     {
         public Texture2D weaponSprite;
-        int wepOffsetX, wepOffsetY;
+        public float weaponRange;
         public CreateAttackCircle atkCircle;
         public int combo, hitForce, attack;
         float showAngle;
-        Rectangle weapLoc;
-        int playerPosX, playerPosY;
 
-        public Weapon(float[] hitCritL, float[] hitOkL, int r, GraphicsDevice device, int weaponWidth, int weaponHeight, int combos, int force, int atk)
+        public Weapon(float[] hitCritL, float[] hitOkL, int r, GraphicsDevice device, float weaponR, int combos, int force, int atk)
         {
             atkCircle = new CreateAttackCircle(hitCritL, hitOkL, 200, device);
-            wepOffsetX = weaponWidth;
-            wepOffsetY = weaponHeight;
+            
             combo = combos; hitForce = force; attack = atk;
-
-            weaponSprite = new Texture2D(device, weaponWidth, weaponHeight);
-            Color[] line = new Color[weaponWidth*weaponHeight];
+            weaponRange = weaponR;
+            
+            weaponSprite = new Texture2D(device, (int) weaponR, 20);
+            Color[] line = new Color[(int) weaponR*20];
             
             for (int i=0; i<line.Length;i++)
                 line[i]=Color.Black;
@@ -38,35 +36,45 @@ namespace GeneratedRPGGame.Core_Mechanics
             weaponSprite.SetData(line);
         }
 
-        public void setOffSet(int x, int y)
-        {
-            wepOffsetX = x;
-            wepOffsetY = y;
-        }
-
         public Boolean comboReached(int hits)
         {
             return hits >= combo;
         }
 
-        
-        public Rectangle stabWeapon(int pPosX, int pPosY, String dir, Player p)
+        public bool stabWeapon(String dir)
         {
-            int offsetX = 0, offsetY = 0;
-            playerPosX = pPosX; playerPosY = pPosY;
-
-            if (dir == "Up") { offsetY -= wepOffsetY; showAngle = 3 * MathHelper.PiOver2; }
-            if (dir == "Right") { offsetX += wepOffsetX; showAngle = 0;}
-            if (dir == "Down") { offsetY+= wepOffsetY; showAngle = MathHelper.PiOver2; }
-            if (dir == "Left") { offsetX-= wepOffsetX; showAngle = MathHelper.Pi; }                      
-                        
-            weapLoc = new Rectangle(pPosX, pPosY, p.xFrames/2+offsetX, p.yFrames/2+offsetY);
-            return weapLoc;
+            if (dir == "Left") { showAngle = MathHelper.Pi; }
+            if (dir == "Up") { showAngle = 3*MathHelper.PiOver2; }
+            if (dir == "Right") { showAngle = 0; }
+            if (dir == "Down") { showAngle = MathHelper.PiOver2; }
+            
+            return false;
         }
 
+        public bool leftQuarterCircle(int pPosX, int pPosY, String dir)
+        {
+            return false;
+        }
+
+        public bool rightQuarterCircle(int pPosX, int pPosY, String dir)
+        {
+            return false;
+        }
+
+        public bool leftHalfCircle(int pPosX, int pPosY, String dir)
+        {
+            return false;
+        }
+
+        public bool rightHalfCircle(int pPosX, int pPosY, String dir)
+        {
+            return false;
+        }
+        
         public void Draw(SpriteBatch sprite, Player p)
         {
-            sprite.Draw(weaponSprite, new Rectangle(playerPosX+p.xFrames/2, playerPosY+p.yFrames/2, weaponSprite.Width, weaponSprite.Height), Rectangle.Empty, Color.White, showAngle, new Vector2(0, 0), SpriteEffects.None, 1f);
+            //sprite.Draw(weaponSprite, p.playerCenter(), new Rectangle(0,0, weaponSprite.Width, weaponSprite.Height), Color.White, showAngle, new Vector2(0, 0), SpriteEffects.None, 1f);
+            sprite.Draw(weaponSprite, p.playerCenter(), new Rectangle(0, 0, weaponSprite.Width, weaponSprite.Height), Color.White, showAngle, Vector2.Zero, 1f, SpriteEffects.None, 1f);
         }
         
 

@@ -16,6 +16,10 @@ namespace GeneratedRPGGame.Core_Mechanics
     {
         public int xFrames, yFrames;
         public int posX, posY, yRef, frame = 0, numOfFrames, health, mana;
+        
+        //used to determin the center of the sprite
+        int centerPosX, centerPosY;
+        
         Texture2D sprite { get; set; }
         Weapon weap;
         public Rectangle curLoc { get; set; }
@@ -29,6 +33,7 @@ namespace GeneratedRPGGame.Core_Mechanics
             yFrames = playerSprite.Height / y;
             numOfFrames = y;
             health = hp; mana = mp;
+            centerPosX = 0; centerPosY = 0;
         }
 
         public void equipWeapon(Weapon w) { weap = w;}
@@ -41,7 +46,7 @@ namespace GeneratedRPGGame.Core_Mechanics
             int yMod = 0, xMod = 0;
 
             if (getKey().IsKeyDown(Keys.Down))
-            { yRef = 0; frame++; yMod = 10; playerDir = "Down"; }
+            { yRef = 0; frame++; yMod = 10; playerDir = "Down";  }
 
             if (getKey().IsKeyDown(Keys.Left))
             { yRef = 1; frame++; xMod = -10; playerDir = "Left"; }
@@ -55,6 +60,8 @@ namespace GeneratedRPGGame.Core_Mechanics
             if (frame > numOfFrames) { frame = 0; }
            
             posX = posX + xMod; posY = posY + yMod;
+            centerPosX = posX + xFrames / 2; centerPosY = posY + yFrames / 2;
+            
             curLoc = new Rectangle(posX, posY, xFrames, yFrames);
             curAnimation = new Rectangle(xFrames * frame, yRef * yFrames, xFrames, yFrames);
         }
@@ -70,14 +77,20 @@ namespace GeneratedRPGGame.Core_Mechanics
             return playerDir;
         }
 
-        public void takeDamage(int dmg)
+        public void takeDamage(int dmg, int x, int y)
         {
+            posX = posX+ x; posY = posY+y;
             health -= dmg;
         }
 
         public Boolean isAlive()
         {
             return health > 0;
+        }
+
+        public Vector2 playerCenter()
+        {
+            return new Vector2(centerPosX, centerPosY);
         }
     }
 }

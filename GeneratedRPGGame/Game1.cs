@@ -33,6 +33,8 @@ namespace GeneratedRPGGame
         
         String indicator="";
         bool keyDownState = false, showAtkCircle = false;
+
+        Texture2D whiteDot;
    
 
         public Game1()
@@ -78,7 +80,7 @@ namespace GeneratedRPGGame
             hitOk = new float[5] { 60, 70, 70, 80, 85 };
 
             newPlayer = new Player(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4, 100, 100);
-            newWeapon = new Weapon(hitCrit, hitOk, 200, graphics.GraphicsDevice, 100f, 10, 50, 10);
+            newWeapon = new Weapon(hitCrit, hitOk, 200, graphics.GraphicsDevice, 100f, 10, 100, 10);
 
             newPlayer.equipWeapon(newWeapon);
             newPlayer.setSpawnPoint(200, 200);
@@ -89,13 +91,23 @@ namespace GeneratedRPGGame
             advancedTile = new TileSets(Content.Load<Texture2D>("Tile Sets/hyptosis-art-batch-1"), 30, 30, graphics.GraphicsDevice);
             monsterTiles = new TileSets(Content.Load<Texture2D>("Sprite Sheets/testMonsters"), 10, 10, graphics.GraphicsDevice);
 
-            newMonster = new Monster(monsterTiles.getTexture(0), 200, 10, 0, 0, 1f, 0.6f, 0, 50, 1, 1);
+            newMonster = new Monster(monsterTiles.getTexture(0), 200, 10, 10, 3, 1f, 0.6f,0, 100, 1, 1);
             newMonster.spawnMonster(400, 400);
 
             ui = new CombatInterface(newPlayer.health, newPlayer.mana, newMonster.health, 50, "Monster", "Player", 400);
             ui.update(newMonster.health, newPlayer.health, graphics.GraphicsDevice);
 
             map = new GenerateMap(800, 800, advancedTile);
+
+            whiteDot = new Texture2D(graphics.GraphicsDevice, 10, 10);
+            Color[] c = new Color[10*10];
+            
+            for (int i=0; i < c.Length;i++)
+            {
+                c[i]=Color.White;
+            }
+
+            whiteDot.SetData(c);
 
                        //target = Content.Load<Texture2D>("simple circle");
             
@@ -166,26 +178,31 @@ namespace GeneratedRPGGame
             if (showAtkCircle == false && newPlayer.isAlive())
             {
                 //normal update functions
-                newMonster.MoveWithBasicAI(newPlayer.posX, newPlayer.posY);              
+                newMonster.MoveWithBasicAI((int) newPlayer.playerCenter().X, (int) newPlayer.playerCenter().Y);              
                 newPlayer.move();
 
-                if (!getKey().IsKeyUp(Keys.Space))
+                if (getKey().IsKeyDown(Keys.Space) && !keyDownState)
                 {
-                    newWeapon.stabWeapon(newPlayer.getPlayerDir());
                     keyDownState = true;
+                    newWeapon.stabWeapon(newPlayer.getPlayerDir());                  
 
-                    if (checkCircleCollision(newMonster.monsterCenter(), 120, newPlayer.playerCenter(), 60))
+                    if (checkCircleCollision(newMonster.monsterCenter(), 60, newPlayer.playerCenter(), 60))
                     {
                         getOffSet(newPlayer.playerCenter(), newMonster.monsterCenter(), new Vector2(collPointX, collPointY), newWeapon.hitForce);
                         newMonster.takeDamage(10, objMod[0], objMod[1]);
-                        hits++;
-                    }
-
+                        hits++; 
+                    }       
                 }
+
+                if (getKey().IsKeyUp(Keys.Space))
+                    keyDownState = false;
+
+
+                if (getKey().IsKeyDown(Keys.Enter)) { newMonster.spawnMonster(400, 400); }                            
                 
-                ui.update(newMonster.health, newPlayer.health, graphics.GraphicsDevice); 
-                
-                if (checkCollision(new Rectangle(newPlayer.posX, newPlayer.posY, 10, 20), newMonster.getHitBox()))
+                ui.update(newMonster.health, newPlayer.health, graphics.GraphicsDevice);
+
+                if (checkCircleCollision(newMonster.monsterCenter(), 60, newPlayer.playerCenter(), 40))
                 {
                     getOffSet(newMonster.monsterCenter(), newPlayer.playerCenter(), new Vector2(collPointX, collPointY), newMonster.hitForce);
                     newPlayer.takeDamage(newMonster.attack, objMod[0], objMod[1]);
@@ -196,7 +213,7 @@ namespace GeneratedRPGGame
                 {
                     killcount++;
                     Random rnd = new Random();
-                    newMonster = new Monster(monsterTiles.getTexture(rnd.Next(0, monsterTiles.listSize)), 200, 10, 0, 5, 80, 20,0,30, 1, 1);
+                    newMonster = new Monster(monsterTiles.getTexture(rnd.Next(0, monsterTiles.listSize)), 200, 10, 10, 3, 80, 20,0,100, 1, 1);
                     newMonster.spawnMonster(rnd.Next(0, 800), rnd.Next(0, 800));
                 }
 
@@ -216,6 +233,8 @@ namespace GeneratedRPGGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         /// 
 
+        
+
         protected override void Draw(GameTime gameTime)
         {
             graphics.GraphicsDevice.Clear(Color.White);
@@ -227,7 +246,12 @@ namespace GeneratedRPGGame
             if (newMonster.alive()) { newMonster.Draw(spriteBatch);}
 
             ui.Draw(spriteBatch);
-            spriteBatch.DrawString(coordinates, "Hit!!!!!!!!!!!!", new Vector2(collPointX, collPointY), Color.Black);
+            
+            spriteBatch.Draw(whiteDot, newPlayer.playerCenter(), Color.White);
+            spriteBatch.Draw(whiteDot, newMonster.monsterCenter(), Color.White);
+            spriteBatch.Draw(whiteDot, new Vector2(collPointX, collPointY), Color.Black);
+
+
                        
             //map.DrawSeperate(spriteBatch, advancedTile);
             newPlayer.Draw(spriteBatch);
@@ -268,19 +292,38 @@ namespace GeneratedRPGGame
         }
 
         int [] objMod;
-        private void getOffSet(Vector2 centObj1, Vector2 centObj2, Vector2 collPoint, int force)
+        private void getOffSet(Vector2 origin, Vector2 target, Vector2 collPoint, int force)
         {
-            double xCent1 = centObj1.X - collPoint.X;
-            double yCent1 = centObj1.Y - collPoint.Y;
+            int modX = 0, modY = 0;
+            
+            double xCent1 = origin.X - target.X;
+            double yCent1 = origin.Y - target.Y;
 
+            if (xCent1 < 0) {
+                if (yCent1 > 0) { modX = 1; modY = -1; }
+                if (yCent1 < 0) { modX = 1; modY = 1;}
+            } 
+            else if (xCent1 > 0) {
+                if (yCent1 > 0) { modX = -1; modY = -1; }
+                if (yCent1 < 0) { modX = -1; modY = 1; }
+            } 
+            else { modX = 0; modY=0; }
+
+            if (yCent1 == 0 && xCent1 < 0) { modX = 1; modY = 0; }
+            if (yCent1 == 0 && xCent1 > 0) { modX = -1; modY = 0; }
+                        
+            if (xCent1 == 0 && yCent1 < 0) { modX = 0; modY = 1; }
+            if (xCent1 == 0 && yCent1 > 0) { modX = 0; modY = - 1; }
+                                    
+            //angle can only be positive or negative doesn't consider the direction the user is facing
             double angleObj1 = Math.Atan(yCent1/xCent1);
                 
-            double xCent2 = centObj2.X - collPoint.X;
-            double yCent2 = centObj2.Y - collPoint.Y;
+            double xCent2 = Math.Abs(target.X - collPoint.X);
+            double yCent2 = Math.Abs(target.Y - collPoint.Y);
 
-            double angleObj2 = Math.Atan(yCent2 / xCent2);
+            double angleObj2 = Math.Atan(yCent2/xCent2);
 
-            objMod = new int[2] { (int)(force * Math.Sin(angleObj1)), (int)(force * Math.Cos(angleObj1)) };
+            objMod = new int[2] { (int)(force * modX), (int)(force * modY)};
             
         }
 

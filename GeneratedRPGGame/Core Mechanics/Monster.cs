@@ -46,30 +46,33 @@ namespace GeneratedRPGGame.Core_Mechanics
 
         public void MoveWithBasicAI(int playerXpos, int playerYPos)
         {
-            if (playerXpos > posX) {
+            centerPosX = posX + xFrame / 2; centerPosY = posY + yFrame / 2;
+
+            if (playerXpos > centerPosX) {
                 posX += movSpeedX;
                 if (xAniFrame < numOfFrames) { yAniFrame = 0; xAniFrame++; }
             }
 
-            if (playerXpos < posX) { 
+            if (playerXpos < centerPosX)
+            { 
                 posX -= movSpeedX; 
                 if (xAniFrame < numOfFrames) { yAniFrame = 0; xAniFrame++; }
             }
 
-            if (playerYPos > posY) { 
+            if (playerYPos > centerPosY)
+            { 
                 posY += movSpeedY; 
                 if (xAniFrame < numOfFrames) { yAniFrame = 0; xAniFrame++; }
             }
 
-            if (playerYPos < posY) { 
+            if (playerYPos < centerPosY)
+            { 
                 posY -= movSpeedY; 
                 if (xAniFrame < numOfFrames) {yAniFrame = 0; xAniFrame++; }
             }
 
             if (xAniFrame>=numOfFrames)
-                xAniFrame = 0;
-
-            centerPosX = posX + xFrame / 2; centerPosY = posY + yFrame / 2;
+                xAniFrame = 0;  
         }
 
         public void Draw(SpriteBatch sprites)

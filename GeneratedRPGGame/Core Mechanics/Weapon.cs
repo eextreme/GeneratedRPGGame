@@ -19,16 +19,18 @@ namespace GeneratedRPGGame.Core_Mechanics
         public CreateAttackCircle atkCircle;
         public int combo, hitForce, attack;
         float showAngle;
+        public float multiplier;
+        public Color[] line;
 
-        public Weapon(float[] hitCritL, float[] hitOkL, int r, GraphicsDevice device, float weaponR, int combos, int force, int atk)
+        public Weapon(float[] hitCritL, float[] hitOkL, int r, float weaponR, int combos, int force, int atk, float multi, GraphicsDevice dev)
         {
-            atkCircle = new CreateAttackCircle(hitCritL, hitOkL, 200, device);
+            atkCircle = new CreateAttackCircle(hitCritL, hitOkL, 100, dev);
             
             combo = combos; hitForce = force; attack = atk;
-            weaponRange = weaponR;
+            weaponRange = weaponR; multiplier = multi;
             
-            weaponSprite = new Texture2D(device, (int) weaponR, 20);
-            Color[] line = new Color[(int) weaponR*20];
+            weaponSprite = new Texture2D(dev, (int) weaponR, 20);
+            line = new Color[(int) weaponR*20];
             
             for (int i=0; i<line.Length;i++)
                 line[i]=Color.Black;
@@ -71,12 +73,24 @@ namespace GeneratedRPGGame.Core_Mechanics
             return false;
         }
         
-        public void Draw(SpriteBatch sprite, Player p)
+        public void Draw(SpriteBatch spriteBatch, Player p)
         {
             //sprite.Draw(weaponSprite, p.playerCenter(), new Rectangle(0,0, weaponSprite.Width, weaponSprite.Height), Color.White, showAngle, new Vector2(0, 0), SpriteEffects.None, 1f);
-            sprite.Draw(weaponSprite, p.playerCenter(), new Rectangle(0, 0, weaponSprite.Width, weaponSprite.Height), Color.White, showAngle, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(weaponSprite, p.playerCenter(), new Rectangle(0, 0, weaponSprite.Width, weaponSprite.Height), Color.White, showAngle, Vector2.Zero, 1f, SpriteEffects.None, 1f);
         }
-        
+
+        public Rectangle boundingRect(Player P)
+        {
+            //Vector2 original = new Vector2(weaponSprite.Width, weaponSprite.Height);
+            Vector2 original = P.playerCenter();
+
+            var rotation = Matrix.CreateRotationZ(showAngle);
+            var translateTo = Matrix.CreateTranslation(new Vector3(0, weaponSprite.Height/2, 0));
+            var combined = translateTo * rotation;
+            Vector2 rotatedVector = Vector2.Transform(original, combined);
+
+            return Collision.vec2Rec(rotatedVector);
+        }
 
     }
 }

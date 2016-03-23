@@ -61,5 +61,41 @@ namespace GeneratedRPGGame.Core_Mechanics
             sprite.Draw(mhpMeter, new Rectangle(0, 30, mhpMeter.Width, mhpMeter.Height), Color.White);
         }
 
+        private KeyboardState getKey() { return Keyboard.GetState(); }
+        int sel = 1, atkUpgCount=0, healthUpgCount=0, speedUpgCount=0, defenceUpgCount=0, multiUpgCount=0;
+        public void drawShop(SpriteBatch spriteBatch, SpriteFont coordinates, Player p, Weapon w)
+        {
+            spriteBatch.DrawString(coordinates, "By your upgrades here", Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(coordinates, "Increase Weapon Damage: +" + atkUpgCount, new Vector2(10, 10), Color.Black);
+            spriteBatch.DrawString(coordinates, "Increase Health: +" + healthUpgCount, new Vector2(10, 20), Color.Black);
+            spriteBatch.DrawString(coordinates, "Increase Movement Speed: " + speedUpgCount, new Vector2(10, 30), Color.Black);
+            spriteBatch.DrawString(coordinates, "Increase Defence: +" + defenceUpgCount, new Vector2(10, 40), Color.Black);
+            spriteBatch.DrawString(coordinates, "Increase Super Attack Damage Multiplier: +" + multiUpgCount, new Vector2(10, 50), Color.Black);
+
+            spriteBatch.DrawString(coordinates, ">", new Vector2(0, sel*10), Color.Black);
+
+            if (!getKey().IsKeyUp(Keys.Up)) { sel -= 1; }
+            if (!getKey().IsKeyUp(Keys.Down)) { sel += 1; }
+
+            if (sel > 5 || sel < 1) { sel = 1; }
+
+            if (!getKey().IsKeyUp(Keys.Enter))
+                buyUpgrade(sel, p, w);
+            
+            if (getKey().IsKeyDown(Keys.Escape))
+            {
+                p.health = 100;
+            }
+        }
+                
+        private void buyUpgrade(int sel, Player p, Weapon w)
+        {
+            if (sel == 1) { w.attack+=10; atkUpgCount++; }
+            if (sel == 2) { p.health+=100; healthUpgCount++; }
+            if (sel == 3) { p.speed+=1; speedUpgCount++; }
+            if (sel == 4) { p.defence += 10; defenceUpgCount++; }
+            if (sel == 5) { w.multiplier+=0.2f; multiUpgCount++; } 
+        }
+
     }
 }

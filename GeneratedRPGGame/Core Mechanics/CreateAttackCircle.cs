@@ -14,9 +14,8 @@ namespace GeneratedRPGGame
 {
     class CreateAttackCircle
     {
+        GraphicsDevice device;
         Texture2D circle, line;
-        GraphicsDevice atkCircle;
-        SpriteFont coordinates;
         String indicator = "Left Click to Stop";
         float[] hitCrit, hitOk;
         List<Fan> allFans, critFans;
@@ -25,10 +24,9 @@ namespace GeneratedRPGGame
         int hits, radius;
         public bool isEnd = false;
 
-        public CreateAttackCircle(float[] hitCritL, float[] hitOkL, int r, GraphicsDevice device)
+        public CreateAttackCircle(float[] hitCritL, float[] hitOkL, int r, GraphicsDevice dev)
         {
-            atkCircle = device;
-
+            device = dev;
             hits = hitCritL.Count();
 
             hitCrit = new float[hits];
@@ -61,7 +59,6 @@ namespace GeneratedRPGGame
 
         public void LoadContent(ContentManager content)
         {
-            coordinates = content.Load<SpriteFont>("Courier New");
             hit = content.Load<SoundEffect>("Sound Effects/anvil_hit");
             miss = content.Load<SoundEffect>("Sound Effects/flyby-Conor");
             crit = content.Load<SoundEffect>("Sound Effects/glass_ping");
@@ -152,24 +149,22 @@ namespace GeneratedRPGGame
         }
 
 
-        public void Draw(SpriteBatch atkCircleGraphic)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            atkCircleGraphic.Draw(circle, screenCenter, null, Color.White, 0f, imageCenter, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(circle, screenCenter, null, Color.White, 0f, imageCenter, 1f, SpriteEffects.None, 0f);
 
             foreach (Fan f in allFans)
-                atkCircleGraphic.Draw(f.texture, screenCenter, null, Color.White, (float)degToRad(f.angle + f.angleOff - 90), imageCenter3, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(f.texture, screenCenter, null, Color.White, (float)degToRad(f.angle + f.angleOff - 90), imageCenter3, 1f, SpriteEffects.None, 0f);
 
             foreach (Fan f in critFans)
-                atkCircleGraphic.Draw(f.texture, screenCenter, null, Color.White, (float)degToRad(f.angle + f.angleOff - 90), imageCenter3, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(f.texture, screenCenter, null, Color.White, (float)degToRad(f.angle + f.angleOff - 90), imageCenter3, 1f, SpriteEffects.None, 0f);
 
-            atkCircleGraphic.Draw(line, screenCenter, null, Color.White, RotationAngle, imageCenter2, 1f, SpriteEffects.None, 0f);
-
-            atkCircleGraphic.DrawString(coordinates, indicator, new Vector2(0, 0), Color.Black);
+            spriteBatch.Draw(line, screenCenter, null, Color.White, RotationAngle, imageCenter2, 1f, SpriteEffects.None, 0f);
         }
 
         private Texture2D drawCircle(int radius, Color colors)
         {
-            Texture2D texture = new Texture2D(atkCircle, radius, radius);
+            Texture2D texture = new Texture2D(device, radius, radius);
             Color[] colorData = new Color[radius * radius];
 
             float diam = radius / 2f;
@@ -197,7 +192,7 @@ namespace GeneratedRPGGame
         }
         private Texture2D drawLine(int radius, Color colors)
         {
-            Texture2D texture = new Texture2D(atkCircle, radius, 1);
+            Texture2D texture = new Texture2D(device, radius, 1);
             Color[] fill = new Color[1 * radius];
 
             for (int i = 0; i < fill.Length; i++)
@@ -210,7 +205,7 @@ namespace GeneratedRPGGame
         }
         private Texture2D drawFan(int radius, double size, Color clrs)
         {
-            Texture2D texture = new Texture2D(atkCircle, radius, radius);
+            Texture2D texture = new Texture2D(device, radius, radius);
             Color[] colorData = new Color[radius * radius];
 
             float diam = radius / 2f;

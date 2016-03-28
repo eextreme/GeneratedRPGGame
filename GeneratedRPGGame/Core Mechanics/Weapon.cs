@@ -21,19 +21,22 @@ namespace GeneratedRPGGame.Core_Mechanics
         float showAngle;
         public float multiplier;
         public Color[] line;
+        Vector2 wepOffSet;
 
         public Weapon(float[] hitCritL, float[] hitOkL, int r, float weaponR, int combos, int force, int atk, float multi, GraphicsDevice dev)
         {
-            atkCircle = new CreateAttackCircle(hitCritL, hitOkL, 100, dev);
+            atkCircle = new CreateAttackCircle(hitCritL, hitOkL, 200, dev);
             
             combo = combos; hitForce = force; attack = atk;
             weaponRange = weaponR; multiplier = multi;
             
-            weaponSprite = new Texture2D(dev, (int) weaponR, 20);
-            line = new Color[(int) weaponR*20];
+            weaponSprite = new Texture2D(dev, (int) weaponR, 10);
+            line = new Color[(int) weaponR*10];
             
             for (int i=0; i<line.Length;i++)
                 line[i]=Color.Black;
+
+            wepOffSet = new Vector2(10 / 2, 10 / 2);
 
             weaponSprite.SetData(line);
         }
@@ -43,32 +46,36 @@ namespace GeneratedRPGGame.Core_Mechanics
             return hits >= combo;
         }
 
-        public bool stabWeapon(String dir)
+        public bool useWeapon(Vector2 dir)
         {
-            if (dir == "Left") { showAngle = MathHelper.Pi; }
-            if (dir == "Up") { showAngle = 3*MathHelper.PiOver2; }
-            if (dir == "Right") { showAngle = 0; }
-            if (dir == "Down") { showAngle = MathHelper.PiOver2; }
-            
+            showAngle = Vector2.Dot(new Vector2(0, 1), dir*MathHelper.PiOver2);
+            if (dir.Equals(Collision.west))
+                showAngle = MathHelper.Pi;
+
             return false;
         }
 
-        public bool leftQuarterCircle(int pPosX, int pPosY, String dir)
+        public bool leftQuarterCircle(Vector2 origin, Vector2 target)
+        {
+            if (Collision.isFacing(origin, target) !=0)
+                return true;
+
+            return false;
+        }
+
+        public bool rightQuarterCircle(Vector2 origin, Vector2 target)
+        {
+            if (origin.X < target.X && origin.Y < target.Y)
+                return true;
+            return false;
+        }
+
+        public bool leftHalfCircle(Vector2 origin, Vector2 target)
         {
             return false;
         }
 
-        public bool rightQuarterCircle(int pPosX, int pPosY, String dir)
-        {
-            return false;
-        }
-
-        public bool leftHalfCircle(int pPosX, int pPosY, String dir)
-        {
-            return false;
-        }
-
-        public bool rightHalfCircle(int pPosX, int pPosY, String dir)
+        public bool rightHalfCircle(Vector2 origin, Vector2 target)
         {
             return false;
         }
@@ -76,13 +83,13 @@ namespace GeneratedRPGGame.Core_Mechanics
         public void Draw(SpriteBatch spriteBatch, Player p)
         {
             //sprite.Draw(weaponSprite, p.playerCenter(), new Rectangle(0,0, weaponSprite.Width, weaponSprite.Height), Color.White, showAngle, new Vector2(0, 0), SpriteEffects.None, 1f);
-            spriteBatch.Draw(weaponSprite, p.playerCenter(), new Rectangle(0, 0, weaponSprite.Width, weaponSprite.Height), Color.White, showAngle, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(weaponSprite, p.playerCenter, new Rectangle(0, 0, weaponSprite.Width, weaponSprite.Height), Color.White, showAngle, wepOffSet, 1f, SpriteEffects.None, 1f);
         }
 
         public Rectangle boundingRect(Player P)
         {
             //Vector2 original = new Vector2(weaponSprite.Width, weaponSprite.Height);
-            Vector2 original = P.playerCenter();
+            Vector2 original = P.playerCenter;
 
             var rotation = Matrix.CreateRotationZ(showAngle);
             var translateTo = Matrix.CreateTranslation(new Vector3(0, weaponSprite.Height/2, 0));
@@ -91,6 +98,7 @@ namespace GeneratedRPGGame.Core_Mechanics
 
             return Collision.vec2Rec(rotatedVector);
         }
+
 
     }
 }

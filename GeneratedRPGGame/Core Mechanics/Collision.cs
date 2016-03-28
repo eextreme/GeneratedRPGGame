@@ -15,6 +15,9 @@ namespace GeneratedRPGGame.Core_Mechanics
     static class Collision
     {
         public static Vector2 collP;
+        public static Vector2 north = new Vector2(0, -1), south = new Vector2(0, 1), east = new Vector2(1, 0), west = new Vector2(-1, 0);
+        public static Vector2 nw = new Vector2(-1, -1), ne = new Vector2(1, -1);
+        public static Vector2 sw = new Vector2(-1, 1), se = new Vector2(1, 1);
 
         public static Boolean rectangle(Rectangle a, Rectangle b)
         {
@@ -83,6 +86,36 @@ namespace GeneratedRPGGame.Core_Mechanics
             return new Rectangle((int) source.X, (int) source.Y, rectX, rectY);
         }
 
-        
+        public static bool hitWall(Vector2 loc, ref float modX, ref float modY)
+        {
+            if (loc.X <= 20) {
+                modX = 40; modY = 0;
+                return true;
+            }
+
+            if (loc.X >= 780) {
+                modX = -40; modY = 0;
+                return true;
+            }
+
+            if (loc.Y <= 90)
+            {
+                modX = 0; modY = 40;
+                return true;
+            }
+
+            if (loc.Y >= 780)
+            {
+                modX = 0; modY = -40;
+                return true;
+            }
+
+            return false;
+        }        
+
+        public static float isFacing(Vector2 a, Vector2 b)
+        {
+            return Vector2.Dot(a, b);
+        }
     }
 }

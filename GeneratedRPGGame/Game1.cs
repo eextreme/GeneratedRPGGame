@@ -55,7 +55,12 @@ namespace GeneratedRPGGame
         /// </summary>
         protected override void Initialize()
         {
+            //might be useful later normalized vectors
+
+            
             // TODO: Add your initialization logic here
+
+            advancedTile = new SpriteSheet(Content.Load<Texture2D>("Tile Sets/hyptosis-art-batch-1"), 30, 30, graphics.GraphicsDevice);
             
             hitCrit = new float[5] { 140, 200, 260, 300, 340 };
             hitOk = new float[5] { 60, 70, 70, 80, 85 };
@@ -71,7 +76,7 @@ namespace GeneratedRPGGame
                         
             monsterTiles = new SpriteSheet(Content.Load<Texture2D>("Sprite Sheets/testMonsters"), 10, 10, graphics.GraphicsDevice);
 
-            newMonster = new Monster(monsterTiles.getSpriteAt(0,0), 200, 10, 10, 3, 1f, 0.6f,0, 100, 1, 1);
+            newMonster = new Monster(monsterTiles.getSpriteAt(0,0), 200, 10, 10, 3 , 1f, 0.6f,0, 100, 1, 1);
             newMonster.spawnMonster(400, 400);
 
             ui = new CombatInterface(newPlayer.health, newPlayer.mana, newMonster.health, 50, "Monster", "Player", 400);
@@ -128,7 +133,6 @@ namespace GeneratedRPGGame
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         /// 
-        Vector2 Test = new Vector2();
         protected override void Update(GameTime gameTime)
         {
              // Allows the game to exit
@@ -145,26 +149,37 @@ namespace GeneratedRPGGame
 
              if (showAtkCircle == true)
              {
-                newWeapon.atkCircle.Update(gameTime);
-                    if (newWeapon.atkCircle.isEnd)
-                        showAtkCircle = false;
+                 newWeapon.atkCircle.Update(gameTime);
+                 if (newWeapon.atkCircle.isEnd)
+                 {
+                     int[] res = newWeapon.atkCircle.getResults();
+                     int modTot = res.Sum();
+                     int force = newWeapon.hitForce*(modTot);
+                     float damage = newWeapon.attack*newWeapon.multiplier*modTot;
+
+                     getOffSet(newPlayer.playerCenter, newMonster.monsterCenter, Collision.collP,force);
+                     newMonster.takeDamage((int)damage, objMod[0], objMod[1]);
+                     newWeapon.atkCircle.resetAngle();
+                     showAtkCircle = false;
+                 }
              }
 
-            if (showAtkCircle == false && newPlayer.isAlive())
+            if (showAtkCircle == false && newPlayer.isAlive)
             {
                 //normal update functions
-                newMonster.MoveWithBasicAI((int) newPlayer.playerCenter().X, (int) newPlayer.playerCenter().Y);              
+                newMonster.MoveWithBasicAI(newPlayer.playerCenter);              
                 newPlayer.move();
+
+                float rebX = 0, rebY = 0;
 
                 if (getKey().IsKeyDown(Keys.Space) && !keyDownState)
                 {
                     keyDownState = true;
-                    newWeapon.stabWeapon(newPlayer.getPlayerDir());
-                    Rectangle wepRec = newWeapon.boundingRect(newPlayer);
+                    newWeapon.useWeapon(newPlayer.getPlayerDir);
 
                     if (playerHitMonster())
                     {
-                        getOffSet(newPlayer.playerCenter(), newMonster.monsterCenter(), Collision.collP, newWeapon.hitForce);
+                        getOffSet(newPlayer.playerCenter, newMonster.monsterCenter, Collision.collP, newWeapon.hitForce);
                         newMonster.takeDamage(newWeapon.attack, objMod[0], objMod[1]);
                         hits++; 
                     }       
@@ -181,18 +196,28 @@ namespace GeneratedRPGGame
 
                 if (monsterHitPlayer())
                 {
-                    getOffSet(newMonster.monsterCenter(), newPlayer.playerCenter(), Collision.collP, newMonster.hitForce);
+                    getOffSet(newMonster.monsterCenter, newPlayer.playerCenter, Collision.collP, newMonster.hitForce);
                     newPlayer.takeDamage(newMonster.attack, objMod[0], objMod[1]);
                 }
 
 
-                if (!newMonster.alive())
+                if (!newMonster.isAlive)
                 {
                     killcount++;
                     Random rnd = new Random();
                     Texture2D mon = monsterTiles.getSpriteAt(rnd.Next(0, 9), rnd.Next(0, 9));
                     newMonster = newMonster.genMonster(killcount, mon);
                     newMonster.spawnMonster(rnd.Next(0, 800), rnd.Next(0, 800));
+                }
+
+                if (Collision.hitWall(newPlayer.playerCenter, ref rebX, ref rebY))
+                {
+                    newPlayer.takeDamage(0, rebX, rebY);
+                };
+
+                if (Collision.hitWall(newMonster.monsterCenter, ref rebX, ref rebY))
+                {
+                    newMonster.takeDamage(10, rebX, rebY);
                 }
             }
 
@@ -210,20 +235,21 @@ namespace GeneratedRPGGame
 
         protected override void Draw(GameTime gameTime)
         {
-            graphics.GraphicsDevice.Clear(Color.White);
+            graphics.GraphicsDevice.Clear(Color.SaddleBrown);
             // TODO: Add your drawing code here
 
             spriteBatch.Begin();
             //map.Draw(spriteBatch);
+            drawArena();
 
-            if (newPlayer.isAlive())
+            if (newPlayer.isAlive)
             {
                 if (showAtkCircle == true){ newWeapon.atkCircle.Draw(spriteBatch);}
-                if (newMonster.alive()) { newMonster.Draw(spriteBatch);}
+                if (newMonster.isAlive) { newMonster.Draw(spriteBatch);}
 
                 ui.Draw(spriteBatch);
-                spriteBatch.Draw(whiteDot, newPlayer.playerCenter(), Color.White);
-                spriteBatch.Draw(whiteDot, newMonster.monsterCenter(), Color.White);
+                spriteBatch.Draw(whiteDot, newPlayer.playerCenter, Color.White);
+                spriteBatch.Draw(whiteDot, newMonster.monsterCenter, Color.White);
                 spriteBatch.Draw(whiteDot, Collision.collP, Color.Black);
                                        
             //map.DrawSeperate(spriteBatch, advancedTile);
@@ -236,7 +262,7 @@ namespace GeneratedRPGGame
                 }
             }
 
-            if (!newPlayer.isAlive())
+            if (!newPlayer.isAlive)
             {
                 spriteBatch.DrawString(coordinates, "Game Over, you killed: " + killcount + " monsters", new Vector2(400, 700), Color.Black);
                 ui.drawShop(spriteBatch, coordinates, newPlayer, newWeapon);
@@ -287,12 +313,29 @@ namespace GeneratedRPGGame
 
         private bool playerHitMonster()
         {
-            return Collision.circle(newPlayer.playerCenter(), newWeapon.weaponRange, newMonster.monsterCenter(), newMonster.size);
+            return Collision.circle(newPlayer.playerCenter, newWeapon.weaponRange, newMonster.monsterCenter, newMonster.size);
         }
 
         private bool monsterHitPlayer()
         {
-            return Collision.circle(newPlayer.playerCenter(), newPlayer.size, newMonster.monsterCenter(), newMonster.size);
+            return Collision.circle(newPlayer.playerCenter, newPlayer.size, newMonster.monsterCenter, newMonster.size);
+        }
+
+        private void drawArena()
+        {
+            Texture2D border = advancedTile.getSpriteAt(22, 7);
+
+            for (int i = 0; i < 800; i+=30)
+            {
+                spriteBatch.Draw(border, new Vector2(i, 70), Color.White);
+                spriteBatch.Draw(border, new Vector2(i, 780), Color.White);
+            }
+
+            for (int i = 70; i<800; i+=30)
+            {
+                spriteBatch.Draw(border, new Vector2(0, i), Color.White);
+                spriteBatch.Draw(border, new Vector2(770, i), Color.White);
+            }
         }
     }
 }

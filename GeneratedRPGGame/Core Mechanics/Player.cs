@@ -15,19 +15,18 @@ namespace GeneratedRPGGame.Core_Mechanics
     class Player
     {
         public int xFrames, yFrames, size;
-        float posX, posY;
+        Vector2 position, centerPos;
         public float speed;
         public int yRef, frame = 0, numOfFrames, health, mana, defence;
         
         //used to determin the center of the sprite
-        float centerPosX, centerPosY;
         
         public Texture2D sprite { get; set; }
         SpriteSheet spriteSheet;
         Weapon weap;
         Vector2 curLoc { get; set; }
         Rectangle curAnimation { get; set;}
-        String playerDir;
+        Vector2 playerDir, angleVec;
         
         public Player(Texture2D playerSprite, int x, int y, int hp, int mp, int def, float spd)
         {
@@ -39,7 +38,7 @@ namespace GeneratedRPGGame.Core_Mechanics
             size = (playerSprite.Width + playerSprite.Height) / 2;
 
             health = hp; mana = mp;
-            centerPosX = 0; centerPosY = 0;
+            centerPos = Vector2.Zero;
             speed = spd; defence = def;
         }
 
@@ -48,81 +47,76 @@ namespace GeneratedRPGGame.Core_Mechanics
             spriteSheet = playerSpriteSheet;
             health = hp; mana = mp; defence = def; speed = spd;
             numOfFrames = frames;
-            centerPosX = 0; centerPosY = 0;            
+            centerPos = Vector2.Zero;
         }
 
         public void equipWeapon(Weapon w) { weap = w;}
         
-        public void setSpawnPoint (int x, int y) {posX = x; posY = y;}
+        public void setSpawnPoint (int x, int y) {position.X = x; position.Y = y;}
         private KeyboardState getKey() {return Keyboard.GetState();}
 
         public void move()
         {
-            float yMod = 0, xMod = 0;
+            Vector2 playerDirMod = Vector2.Zero;
 
             if (getKey().IsKeyDown(Keys.Down))
-            { yRef = 0; frame++; yMod = speed; playerDir = "Down";  }
+            { yRef = 0; frame++; playerDir = Collision.south; playerDirMod += playerDir; }            
 
             if (getKey().IsKeyDown(Keys.Left))
-            { yRef = 1; frame++; xMod = -speed; playerDir = "Left"; }
+            { yRef = 1; frame++; playerDir = Collision.west; playerDirMod += playerDir; }
 
             if (getKey().IsKeyDown(Keys.Up))
-            { yRef = 2; frame++; yMod = -speed; playerDir = "Up"; }
+            { yRef = 2; frame++; playerDir = Collision.north; playerDirMod += playerDir; }
 
             if (getKey().IsKeyDown(Keys.Right))
-            { yRef = 3; frame++; xMod = speed; playerDir = "Right"; }
+            { yRef = 3; frame++; playerDir = Collision.east;  playerDirMod += playerDir; }
 
             if (frame > numOfFrames) { frame = 0; }
-           
-            posX = posX + xMod; posY = posY + yMod;           
+
+            position += speed * playerDirMod;
+            angleVec = playerDirMod;
             
-            curLoc = new Vector2(posX, posY);
             sprite = spriteSheet.getSpriteAt(frame,yRef);
 
-            centerPosX = posX + sprite.Width/2; centerPosY = posY + sprite.Height/2;
+            centerPos = position + new Vector2(sprite.Width/2, sprite.Height/2);
         }
         
         public void Draw(SpriteBatch spriteBatch)
         {            
-            spriteBatch.Draw(this.sprite, this.curLoc, Color.White);            
+            spriteBatch.Draw(this.sprite, position, Color.White);
         }
 
-        public String getPlayerDir()
+        public Vector2 getPlayerDir
         {
-            return playerDir;
+            get { return playerDir; }
         }
 
         public void takeDamage(int dmg, float x, float y)
         {
-            posX = posX + x; posY = posY+y;
+            position += new Vector2(x, y);
             health -= dmg;
         }
 
-        public Boolean isAlive()
+        public Boolean isAlive
         {
-            return health > 0;
+            get { return health > 0; }
         }
 
-        public Vector2 playerCenter()
+        public Vector2 playerCenter
         {
-            return new Vector2(centerPosX, centerPosY);
-        }
-
-        public Rectangle getHitBox()
-        {
-            return new Rectangle((int) posX, (int) posY, xFrames, yFrames);
+            get { return centerPos; }
         }
 
         public Color[] getColor()
         {
-            Color[] data = new Color[sprite.Width * sprite.Height];
-            sprite.GetData<Color>(data);
-            return data;
+                Color[] data = new Color[sprite.Width * sprite.Height];
+                sprite.GetData<Color>(data);
+                return data;
         }
 
         public Matrix getPlayerWorld()
         {
-            return Matrix.CreateTranslation(new Vector3(playerCenter(), 0f));
+            return Matrix.CreateTranslation(new Vector3(playerCenter, 0f));
         }
     }
 }

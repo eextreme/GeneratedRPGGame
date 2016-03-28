@@ -22,6 +22,7 @@ namespace GeneratedRPGGame
         Vector2 screenCenter, imageCenter, imageCenter2, imageCenter3;
         SoundEffect hit, miss, crit;
         int hits, radius;
+        int[] results;
         public bool isEnd = false;
 
         public CreateAttackCircle(float[] hitCritL, float[] hitOkL, int r, GraphicsDevice dev)
@@ -31,7 +32,8 @@ namespace GeneratedRPGGame
 
             hitCrit = new float[hits];
             hitOk = new float[hits];
-
+            results = new int[hits];
+           
             hitCrit = hitCritL;
             hitOk = hitOkL;
 
@@ -68,6 +70,11 @@ namespace GeneratedRPGGame
         private bool pressed = false;
         private int current = 0;
 
+        public void resetAngle()
+        {
+            RotationAngle = 0;
+        }
+
         public void Update(GameTime time)
         {
             float elapsed = (float)time.ElapsedGameTime.TotalMilliseconds;
@@ -91,17 +98,17 @@ namespace GeneratedRPGGame
                     if (error<= 0.03)
                     {
                         indicator = "Critical Hit! With " + hitCrit[current] + " at " + angle*180/Math.PI;
-                        circleCrit();
+                        circleCrit(current);
                     }
                     else if (error<= errorOk)
                     {
                         indicator = "Hit! With " + hitCrit[current] + " at " + angle * 180 / Math.PI;
-                        circleHit();
+                        circleHit(current);
                     }
                     else
                     {
                         indicator = "Miss! With " + hitCrit[current] + " at " + angle * 180 / Math.PI;
-                        circleMiss();
+                        circleMiss(current);
                         //isEnd = true;
                     }
 
@@ -130,17 +137,19 @@ namespace GeneratedRPGGame
             return Mouse.GetState();
         }
 
-        private void circleHit(){
+        private void circleHit(int cHit){
             hit.Play();
-            //Indicate that something hit
+            results[cHit] = 1;            
         }
-        private void circleMiss(){
+        private void circleMiss(int cMiss){
             miss.Play();
+            results[cMiss] = 0;
             //Indicate that something missed
         }
-        private void circleCrit()
+        private void circleCrit(int cCrit)
         {
             crit.Play();
+            results[cCrit] = 2;
         }
 
         private double degToRad(double deg)
@@ -232,6 +241,11 @@ namespace GeneratedRPGGame
 
             texture.SetData(colorData);
             return texture;
+        }
+
+        public int[] getResults()
+        {
+            return results;
         }
 
         private class Fan

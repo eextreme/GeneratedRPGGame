@@ -89,7 +89,11 @@ namespace GeneratedRPGGame.Core_Mechanics
         public Boolean isAlive { get { return health > 0; } }
         
         public void takeDamage(int dmg, float x, float y) {
-            position+=new Vector2(x,y);           
+                        
+            Vector2 change= position+new Vector2(x,y);
+
+            position = Vector2.Lerp(position, change, 0.3f);
+
             int damage = dmg-defense;
             if (damage < 0) { damage = 0;}
             health -= damage;

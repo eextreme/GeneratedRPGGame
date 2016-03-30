@@ -74,6 +74,7 @@ namespace GeneratedRPGGame.Core_Mechanics
             if (frame > numOfFrames) { frame = 0; }
 
             position += speed * playerDirMod;
+
             angleVec = playerDirMod;
             
             sprite = spriteSheet.getSpriteAt(frame,yRef);

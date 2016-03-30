@@ -29,10 +29,11 @@ namespace GeneratedRPGGame
         Weapon newWeapon;
         Monster newMonster;        
         CombatInterface ui;
+        Vector2 test;
         
         bool keyDownState = false, showAtkCircle = false;
 
-        Texture2D whiteDot;   
+        Texture2D whiteDot, whiteSquare;
 
         public Game1()
         {
@@ -67,7 +68,7 @@ namespace GeneratedRPGGame
             player = new SpriteSheet(Content.Load<Texture2D>("Sprite Sheets/sprites_map_claudius"), 6, 4, graphics.GraphicsDevice);
 
             newPlayer = new Player(player, 100, 100, 10, 10, 5);
-            newWeapon = new Weapon(hitCrit, hitOk, 200, 100f, 10, 100, 10, 1.5f, graphics.GraphicsDevice);
+            newWeapon = new Weapon(hitCrit, hitOk, 200, 100f, 10, 300, 20, 1.5f, graphics.GraphicsDevice);
 
             newPlayer.equipWeapon(newWeapon);
             newPlayer.setSpawnPoint(200, 200);
@@ -82,15 +83,8 @@ namespace GeneratedRPGGame
             ui = new CombatInterface(newPlayer.health, newPlayer.mana, newMonster.health, 50, "Monster", "Player", 400);
             ui.update(newMonster.health, newPlayer.health, graphics.GraphicsDevice);
 
-            whiteDot = new Texture2D(graphics.GraphicsDevice, 10, 10);
-            Color[] c = new Color[10*10];
-            
-            for (int i=0; i < c.Length;i++)
-            {
-                c[i]=Color.White;
-            }
-
-            whiteDot.SetData(c);
+            Collision.drawRect(ref whiteDot, Color.White, 10, 10, graphics.GraphicsDevice);
+            Collision.drawRect(ref whiteSquare, Color.White, 20, 20, graphics.GraphicsDevice);
             
             base.Initialize();
         }
@@ -164,9 +158,12 @@ namespace GeneratedRPGGame
                  }
              }
 
+            
             if (showAtkCircle == false && newPlayer.isAlive)
             {
                 //normal update functions
+                //Collision.rotate2(newMonster.monsterCenter, ref test, MathHelper.Pi/180*gameTime.ElapsedGameTime.Milliseconds/10);
+
                 newMonster.MoveWithBasicAI(newPlayer.playerCenter);              
                 newPlayer.move();
 
@@ -175,18 +172,25 @@ namespace GeneratedRPGGame
                 if (getKey().IsKeyDown(Keys.Space) && !keyDownState)
                 {
                     keyDownState = true;
-                    newWeapon.useWeapon(newPlayer.getPlayerDir);
+                    
 
-                    if (playerHitMonster())
+                    //change test reference point to a specific location based on the direction the user is facing
+            
+                    Collision.rotate2(newPlayer.playerCenter, ref test, MathHelper.Pi * gameTime.ElapsedGameTime.Milliseconds / 360, 1);
+
+                    if (Collision.circle(test, 10, newMonster.monsterCenter, newMonster.size))
                     {
-                        getOffSet(newPlayer.playerCenter, newMonster.monsterCenter, Collision.collP, newWeapon.hitForce);
+                        getOffSet(newPlayer.playerCenter, newMonster.monsterCenter, Collision.collP, newWeapon.hitForce);                        
                         newMonster.takeDamage(newWeapon.attack, objMod[0], objMod[1]);
                         hits++; 
                     }       
                 }
 
                 if (getKey().IsKeyUp(Keys.Space))
+                {
+                    test = newWeapon.centerArc(newPlayer.playerCenter, newPlayer.getPlayerDir);
                     keyDownState = false;
+                }
 
 
                 if (getKey().IsKeyDown(Keys.Enter)) { newMonster.spawnMonster(400, 400); }                            
@@ -221,6 +225,7 @@ namespace GeneratedRPGGame
                 }
             }
 
+
             //newCircle.Update(gameTime);
             // TODO: Add your update logic here
 
@@ -239,7 +244,8 @@ namespace GeneratedRPGGame
             // TODO: Add your drawing code here
 
             spriteBatch.Begin();
-            //map.Draw(spriteBatch);
+            //map.Draw(spriteBatch
+
             drawArena();
 
             if (newPlayer.isAlive)
@@ -250,14 +256,14 @@ namespace GeneratedRPGGame
                 ui.Draw(spriteBatch);
                 spriteBatch.Draw(whiteDot, newPlayer.playerCenter, Color.White);
                 spriteBatch.Draw(whiteDot, newMonster.monsterCenter, Color.White);
-                spriteBatch.Draw(whiteDot, Collision.collP, Color.Black);
+                spriteBatch.Draw(whiteSquare, test, Color.White);
+                //spriteBatch.Draw(whiteDot, new Vector2(400, 400), Color.White);
                                        
             //map.DrawSeperate(spriteBatch, advancedTile);
                 newPlayer.Draw(spriteBatch);
 
                 if (keyDownState)
                 {
-                    newWeapon.Draw(spriteBatch, newPlayer);
                     keyDownState = false;
                 }
             }
@@ -273,12 +279,6 @@ namespace GeneratedRPGGame
             base.Draw(gameTime);
         }
             
-        public Boolean checkCollision(Rectangle a, Rectangle b)
-        {
-            return a.Intersects(b);
-        }       
-
-
         float[] objMod;
         private void getOffSet(Vector2 origin, Vector2 target, Vector2 collPoint, int force)
         {
@@ -314,6 +314,22 @@ namespace GeneratedRPGGame
         private bool playerHitMonster()
         {
             return Collision.circle(newPlayer.playerCenter, newWeapon.weaponRange, newMonster.monsterCenter, newMonster.size);
+        }
+
+        private bool weaponHitMonster()
+        {
+            //Input: end point of the weapon in vectors based on (gameTime)
+            //Output: return true if the weapon is inside the monster's hit box
+
+            Vector2 startLoc = newPlayer.getPlayerDir*newWeapon.weaponRange;
+            Vector2 endLoc = newWeapon.attackType(0);
+
+
+
+
+
+            
+            return false;
         }
 
         private bool monsterHitPlayer()

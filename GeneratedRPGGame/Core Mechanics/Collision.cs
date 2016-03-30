@@ -117,5 +117,62 @@ namespace GeneratedRPGGame.Core_Mechanics
         {
             return Vector2.Dot(a, b);
         }
+
+        public static bool isFacing(Vector2 dir, Vector2 a, Vector2 b)
+        {
+            float pointXerr = Math.Abs(a.X - b.X) / b.X, pointYerr = Math.Abs(a.Y - b.Y) / b.Y;
+
+            if (dir == Collision.north && b.Y < a.Y && pointXerr < 0.20)
+                return true;
+
+            if (dir == Collision.east && b.X > a.X && pointYerr < 0.20)
+                return true;
+
+            if (dir == Collision.south && b.Y > a.Y && pointXerr < 0.20)
+                return true;
+
+            if (dir == Collision.west && b.X < a.X && pointYerr < 0.20)
+                return true;
+
+            return false;
+        }
+
+        public static void rotate(ref Vector2 a, double b)
+        {
+            float angleX = (float) Math.Cos(b);
+            float angleY = (float) Math.Sin(b);
+
+            float newX = (angleX * a.X - angleY * a.Y);
+            float newY = (angleX * a.X + angleY * a.Y);
+
+            a = new Vector2(newX, newY);
+        }
+
+        public static void rotate2(Vector2 origin, ref Vector2 dest, float angle, int dir)
+        {
+            var newX = Math.Cos(dir*angle) * (dest.X - origin.X) - Math.Sin(dir*angle) * (dest.Y - origin.Y) + origin.X;
+            var newY = Math.Sin(dir*angle) * (dest.X - origin.X) + Math.Cos(dir*angle) * (dest.Y - origin.Y) + origin.Y;
+
+            dest = new Vector2((float) newX, (float) newY);
+
+            //p'x = cos(theta) * (px-ox) - sin(theta) * (py-oy) + ox
+
+            //p'y = sin(theta) * (px-ox) + cos(theta) * (py-oy) + oy
+        }
+
+        public static void drawRect(ref Texture2D texture, Color color, int width, int height, GraphicsDevice graphic)
+        {
+            texture = new Texture2D(graphic, width, height);
+            Color[] c = new Color[width*height];
+            
+            for (int i=0; i < c.Length;i++)
+            {
+                c[i]=color;
+            }
+
+            texture.SetData(c);
+        }
+
+
     }
 }
